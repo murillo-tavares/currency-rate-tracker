@@ -8,9 +8,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 class JacksonConfig {
 
-    /** {@code ObjectMapper} do Jackson 2, com suporte a tipos de data/hora do Java 8+. */
+    /** Singleton com suporte a tipos de data/hora do Java 8+, acessível fora do contexto do Spring. */
+    static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(new JavaTimeModule());
+
     @Bean
     ObjectMapper jackson2ObjectMapper() {
-        return new ObjectMapper().registerModule(new JavaTimeModule());
+        return OBJECT_MAPPER;
     }
 }
