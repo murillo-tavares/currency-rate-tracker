@@ -5,23 +5,39 @@ import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.Cotacao
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.Moeda;
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.repository.MoedaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * Regras de negócio de cotação de moedas. Busca as moedas do catálogo e delega a consulta
- * dos valores atuais ao {@link CotacaoClient}.
+ * dos valores atuais ao {@link CotacaoClient}, guardando o resultado em cache.
  */
 @Service
 @RequiredArgsConstructor
 public class CotacaoService {
 
+    public static final String CACHE_COTACOES = "cotacoes";
+    private static final String CHAVE_CACHE_ATUAL = "'atual'";
+
     private final MoedaRepository moedaRepository;
     private final CotacaoClient cotacaoClient;
 
-    /** Busca a cotação atual de todas as moedas do catálogo. */
-    public List<Cotacao> buscarCotacoesAtuais() {
+    /** Lê a cotação atual do cache; se ainda não populado, consulta a AwesomeAPI na hora. */
+    @Cacheable(cacheNames = CACHE_COTACOES, key = CHAVE_CACHE_ATUAL)
+    public List<Cotacao> obterCotacoesAtuais() {
+        return buscarCotacoesNaOrigem();
+    }
+
+    /** Consulta a AwesomeAPI e atualiza o cache. Chamado pelo job agendado. */
+    @CachePut(cacheNames = CACHE_COTACOES, key = CHAVE_CACHE_ATUAL)
+    public List<Cotacao> atualizarCotacoesEmCache() {
+        return buscarCotacoesNaOrigem();
+    }
+
+    private List<Cotacao> buscarCotacoesNaOrigem() {
         List<Moeda> moedas = moedaRepository.findAll();
         return cotacaoClient.buscarCotacoes(moedas);
     }

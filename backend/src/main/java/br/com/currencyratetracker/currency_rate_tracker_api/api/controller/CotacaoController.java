@@ -22,10 +22,10 @@ public class CotacaoController {
     private final CotacaoService cotacaoService;
     private final CotacaoMapper cotacaoMapper;
 
-    /** Lista a cotação atual de todas as moedas do catálogo. */
+    /** Lista a cotação atual de todas as moedas do catálogo, servida a partir do cache. */
     @GetMapping
     public List<CotacaoResponse> listar() {
-        List<Cotacao> cotacoes = cotacaoService.buscarCotacoesAtuais();
+        List<Cotacao> cotacoes = cotacaoService.obterCotacoesAtuais();
         return cotacaoMapper.toResponseList(cotacoes);
     }
 }

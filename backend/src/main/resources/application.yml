@@ -23,3 +23,7 @@ integracao:
     base-url: ${AWESOME_API_BASE_URL:https://economia.awesomeapi.com.br}
     connect-timeout-millis: ${AWESOME_API_CONNECT_TIMEOUT_MILLIS:3000}
     read-timeout-millis: ${AWESOME_API_READ_TIMEOUT_MILLIS:3000}
+
+cotacao:
+  atualizacao:
+    intervalo-millis: ${COTACAO_ATUALIZACAO_INTERVALO_MILLIS:60000}
