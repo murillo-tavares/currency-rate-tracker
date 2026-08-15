@@ -27,3 +27,7 @@ integracao:
 cotacao:
   atualizacao:
     intervalo-millis: ${COTACAO_ATUALIZACAO_INTERVALO_MILLIS:60000}
+
+springdoc:
+  swagger-ui:
+    url: /openapi.yaml

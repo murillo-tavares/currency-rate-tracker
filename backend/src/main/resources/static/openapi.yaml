@@ -1,0 +1,172 @@
+openapi: 3.0.3
+info:
+  title: Currency Rate Tracker API
+  description: API de cotação de moedas. Catálogo de moedas suportadas e cotações atuais/históricas.
+  version: "1.0.0"
+
+servers:
+  - url: /api/v1
+
+tags:
+  - name: Moeda
+    description: Catálogo de moedas suportadas para cotação
+  - name: Cotação
+    description: Cotação atual e histórico de cotações das moedas
+
+paths:
+  /moedas:
+    get:
+      tags: [Moeda]
+      summary: Lista todas as moedas disponíveis para cotação
+      operationId: listarMoedas
+      responses:
+        "200":
+          description: Lista de moedas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MoedaResponse"
+
+  /cotacoes:
+    get:
+      tags: [Cotação]
+      summary: Lista a cotação atual de todas as moedas do catálogo
+      description: Servido a partir do cache, atualizado periodicamente por um job agendado.
+      operationId: listarCotacoesAtuais
+      responses:
+        "200":
+          description: Cotações atuais
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CotacaoResponse"
+        "503":
+          description: Falha ao consultar a origem das cotações
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+
+  /cotacoes/dashboard:
+    get:
+      tags: [Cotação]
+      summary: Dashboard de cotações (uma ou várias moedas) dentro de um intervalo de datas
+      description: >-
+        Agrupa o histórico de cotações em um gráfico por moeda. Sem `codigosMoeda`, considera
+        todas as moedas do catálogo. Sem `inicio`, considera as últimas 24 horas.
+      operationId: buscarDashboardCotacoes
+      parameters:
+        - name: codigosMoeda
+          in: query
+          description: Códigos das moedas a filtrar. Sem filtro, retorna todas.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+          example: [USD, EUR]
+        - name: inicio
+          in: query
+          description: Início do intervalo. Default as últimas 24 horas.
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: fim
+          in: query
+          description: Fim do intervalo. Sem default (sem limite superior).
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        "200":
+          description: Dashboard de cotações
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardResponse"
+
+components:
+  schemas:
+    MoedaResponse:
+      type: object
+      properties:
+        codigo:
+          type: string
+          example: USD
+        nome:
+          type: string
+          example: Dólar Americano
+
+    CotacaoResponse:
+      type: object
+      properties:
+        codigoMoeda:
+          type: string
+          example: USD
+        nome:
+          type: string
+          example: Dólar Americano
+        valor:
+          type: number
+          example: 5.42
+        variacaoPercentual:
+          type: number
+          example: 0.23
+        dataCotacao:
+          type: string
+          format: date-time
+
+    DashboardResponse:
+      type: object
+      properties:
+        graficos:
+          type: array
+          items:
+            $ref: "#/components/schemas/GraficoResponse"
+
+    GraficoResponse:
+      type: object
+      properties:
+        codigoMoeda:
+          type: string
+          example: USD
+        pontos:
+          type: array
+          items:
+            $ref: "#/components/schemas/PontoResponse"
+
+    PontoResponse:
+      type: object
+      properties:
+        valor:
+          type: number
+          example: 5.42
+        variacaoPercentual:
+          type: number
+          example: 0.23
+        dataCotacao:
+          type: string
+          format: date-time
+
+    Erro:
+      type: object
+      properties:
+        status:
+          type: integer
+        error:
+          type: string
+        codigo:
+          type: string
+          description: Código do erro de negócio (catálogo interno). Ausente em erros de framework/validação.
+          nullable: true
+          example: COTACAO_INDISPONIVEL
+        message:
+          type: string
+        path:
+          type: string
