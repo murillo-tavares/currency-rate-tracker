@@ -15,9 +15,9 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CotacaoSpecifications {
 
-    /** Filtra pelo código, dentre os informados. */
-    public static Specification<Cotacao> comCodigoEm(List<String> codigos) {
-        return (root, query, cb) -> root.get("codigo").in(codigos);
+    /** Filtra pelo código da moeda, dentre os informados. */
+    public static Specification<Cotacao> comCodigoMoedaEm(List<String> codigosMoeda) {
+        return (root, query, cb) -> root.get("codigoMoeda").in(codigosMoeda);
     }
 
     /** Filtra pela data de cotação maior ou igual à informada. */

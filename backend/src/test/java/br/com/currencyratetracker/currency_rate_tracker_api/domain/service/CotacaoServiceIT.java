@@ -35,14 +35,14 @@ class CotacaoServiceIT extends IntegrationTest {
     @Test
     void deveServirCotacoesDoCacheAposAtualizar() {
         Cotacao cotacaoEmCache = Cotacao.builder()
-                .codigo("USD")
+                .codigoMoeda("USD")
                 .nome("Dólar Americano")
                 .valor(new BigDecimal("5.42"))
                 .variacaoPercentual(new BigDecimal("0.23"))
                 .dataCotacao(LocalDateTime.of(2026, 8, 14, 10, 0))
                 .build();
         Cotacao cotacaoMaisRecente = Cotacao.builder()
-                .codigo("USD")
+                .codigoMoeda("USD")
                 .nome("Dólar Americano")
                 .valor(new BigDecimal("6.00"))
                 .variacaoPercentual(new BigDecimal("1.00"))

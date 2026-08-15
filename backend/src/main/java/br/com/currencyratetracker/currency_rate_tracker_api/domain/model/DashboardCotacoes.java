@@ -15,7 +15,7 @@ public record DashboardCotacoes(
 
     /** Agrupa as cotações por moeda, uma {@link GraficoCotacao} por código, ordenadas por código. */
     public static DashboardCotacoes de(List<Cotacao> cotacoes) {
-        Map<String, List<Cotacao>> pontosPorMoeda = cotacoes.stream().collect(Collectors.groupingBy(Cotacao::getCodigo));
+        Map<String, List<Cotacao>> pontosPorMoeda = cotacoes.stream().collect(Collectors.groupingBy(Cotacao::getCodigoMoeda));
         List<GraficoCotacao> graficos = pontosPorMoeda.entrySet().stream()
                 .map(entrada -> new GraficoCotacao(entrada.getKey(), entrada.getValue()))
                 .sorted(Comparator.comparing(GraficoCotacao::codigoMoeda))

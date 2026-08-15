@@ -37,8 +37,8 @@ public class Cotacao {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, length = 10)
-    private String codigo;
+    @Column(name = "codigo_moeda", nullable = false, length = 10)
+    private String codigoMoeda;
 
     @Column(nullable = false, length = 100)
     private String nome;

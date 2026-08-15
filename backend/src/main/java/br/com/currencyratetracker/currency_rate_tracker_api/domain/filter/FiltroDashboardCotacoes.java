@@ -16,7 +16,7 @@ import java.util.List;
  * Se resolve para uma única {@link Specification}.
  */
 public record FiltroDashboardCotacoes(
-        List<String> codigos,
+        List<String> codigosMoeda,
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime inicio,
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fim
 ) {
@@ -27,14 +27,14 @@ public record FiltroDashboardCotacoes(
         // Sem início, evita consulta sem limite inferior; sem fim não há problema — não existe cotação além de agora.
         LocalDateTime inicioComPadrao = inicio != null ? inicio : LocalDateTime.now().minusHours(INTERVALO_PADRAO_HORAS);
 
-        codigos = CodigoMoedaUtils.ordenarSemDuplicados(codigos);
+        codigosMoeda = CodigoMoedaUtils.ordenarSemDuplicados(codigosMoeda);
         inicio = DataHoraUtils.arredondarParaMinuto(inicioComPadrao);
         fim = DataHoraUtils.arredondarParaMinuto(fim);
     }
 
     public Specification<Cotacao> toSpecification() {
         return new SpecificationBuilder<Cotacao>()
-                .addIfPresent(codigos, CotacaoSpecifications::comCodigoEm)
+                .addIfPresent(codigosMoeda, CotacaoSpecifications::comCodigoMoedaEm)
                 .addIfPresent(inicio, CotacaoSpecifications::comDataCotacaoAPartirDe)
                 .addIfPresent(fim, CotacaoSpecifications::comDataCotacaoAte)
                 .build();

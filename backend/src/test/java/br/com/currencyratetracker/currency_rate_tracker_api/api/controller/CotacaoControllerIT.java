@@ -35,7 +35,7 @@ class CotacaoControllerIT extends IntegrationTest {
     @Test
     void deveListarCotacoesAtuais() throws Exception {
         Cotacao cotacao = Cotacao.builder()
-                .codigo("USD")
+                .codigoMoeda("USD")
                 .nome("Dólar Americano")
                 .valor(new BigDecimal("5.42"))
                 .variacaoPercentual(new BigDecimal("0.23"))
@@ -46,7 +46,7 @@ class CotacaoControllerIT extends IntegrationTest {
         mockMvc.perform(get("/cotacoes"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].codigo").value("USD"))
+                .andExpect(jsonPath("$[0].codigoMoeda").value("USD"))
                 .andExpect(jsonPath("$[0].valor").value(5.42));
     }
 
@@ -67,7 +67,7 @@ class CotacaoControllerIT extends IntegrationTest {
         salvarCotacao("EUR", "6.10", LocalDateTime.now().minusHours(1));
         salvarCotacao("GBP", "7.00", LocalDateTime.now().minusHours(1));
 
-        mockMvc.perform(get("/cotacoes/dashboard").param("codigos", "USD", "EUR"))
+        mockMvc.perform(get("/cotacoes/dashboard").param("codigosMoeda", "USD", "EUR"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.graficos.length()").value(2))
                 .andExpect(jsonPath("$.graficos[0].codigoMoeda").value("EUR"))
@@ -89,16 +89,16 @@ class CotacaoControllerIT extends IntegrationTest {
         salvarCotacao("USD", "5.00", LocalDateTime.now().minusDays(2));
         salvarCotacao("USD", "5.42", LocalDateTime.now().minusHours(1));
 
-        mockMvc.perform(get("/cotacoes/dashboard").param("codigos", "USD"))
+        mockMvc.perform(get("/cotacoes/dashboard").param("codigosMoeda", "USD"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.graficos[0].pontos.length()").value(1))
                 .andExpect(jsonPath("$.graficos[0].pontos[0].valor").value(5.42));
     }
 
-    private void salvarCotacao(String codigo, String valor, LocalDateTime dataCotacao) {
+    private void salvarCotacao(String codigoMoeda, String valor, LocalDateTime dataCotacao) {
         cotacaoRepository.save(Cotacao.builder()
-                .codigo(codigo)
-                .nome(codigo)
+                .codigoMoeda(codigoMoeda)
+                .nome(codigoMoeda)
                 .valor(new BigDecimal(valor))
                 .variacaoPercentual(BigDecimal.ZERO)
                 .dataCotacao(dataCotacao)

@@ -21,7 +21,7 @@ record AwesomeApiCotacaoResponse(
     /** Converte a resposta bruta da AwesomeAPI para o domínio, usando código/nome do catálogo. */
     Cotacao paraCotacao(Moeda moeda) {
         return Cotacao.builder()
-                .codigo(moeda.getCodigo())
+                .codigoMoeda(moeda.getCodigo())
                 .nome(moeda.getNome())
                 .valor(bid)
                 .variacaoPercentual(pctChange)

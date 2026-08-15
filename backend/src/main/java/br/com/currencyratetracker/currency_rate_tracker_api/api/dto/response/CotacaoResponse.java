@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
  * Dados de saída da cotação atual de uma moeda.
  */
 public record CotacaoResponse(
-        String codigo,
+        String codigoMoeda,
         String nome,
         BigDecimal valor,
         BigDecimal variacaoPercentual,
