@@ -5,6 +5,7 @@ import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.Cotacao
 import br.com.currencyratetracker.currency_rate_tracker_api.support.suite.IntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.math.BigDecimal;
@@ -17,6 +18,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+/** Único teste que precisa do cache de verdade ligado — sobrescreve o padrão de {@link IntegrationTest}. */
+@TestPropertySource(properties = "spring.cache.type=redis")
 class CotacaoServiceIT extends IntegrationTest {
 
     @Autowired
