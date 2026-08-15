@@ -1,6 +1,7 @@
 package br.com.currencyratetracker.currency_rate_tracker_api.infrastructure.client.awesomeapi;
 
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.Cotacao;
+import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.Moeda;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -12,14 +13,19 @@ import java.time.LocalDateTime;
  */
 record AwesomeApiCotacaoResponse(
         String code,
-        String name,
         BigDecimal bid,
         BigDecimal pctChange,
         @JsonProperty("create_date") @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime createDate
 ) {
 
-    /** Converte a resposta bruta da AwesomeAPI para o domínio. */
-    Cotacao paraCotacao() {
-        return new Cotacao(code, name, bid, pctChange, createDate);
+    /** Converte a resposta bruta da AwesomeAPI para o domínio, usando código/nome do catálogo. */
+    Cotacao paraCotacao(Moeda moeda) {
+        return Cotacao.builder()
+                .codigo(moeda.getCodigo())
+                .nome(moeda.getNome())
+                .valor(bid)
+                .variacaoPercentual(pctChange)
+                .dataCotacao(createDate)
+                .build();
     }
 }

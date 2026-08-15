@@ -11,6 +11,6 @@ public record CotacaoResponse(
         String nome,
         BigDecimal valor,
         BigDecimal variacaoPercentual,
-        LocalDateTime dataAtualizacao
+        LocalDateTime dataCotacao
 ) {
 }

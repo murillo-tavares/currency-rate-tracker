@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Atualiza periodicamente o cache de cotações, para que requisições de usuário nunca
- * cheguem a chamar a AwesomeAPI diretamente.
+ * cheguem a chamar a AwesomeAPI diretamente, e registra cada atualização.
  */
 @Component
 @RequiredArgsConstructor
@@ -15,9 +15,9 @@ class CotacaoAtualizacaoScheduler {
 
     private final CotacaoService cotacaoService;
 
-    /** Consulta a AwesomeAPI e atualiza o cache no intervalo configurado. */
+    /** Consulta a AwesomeAPI, atualiza o cache e persiste a cotação no intervalo configurado. */
     @Scheduled(fixedRateString = "${cotacao.atualizacao.intervalo-millis:60000}")
     void atualizarCotacoes() {
-        cotacaoService.atualizarCotacoesEmCache();
+        cotacaoService.atualizarCotacoes();
     }
 }

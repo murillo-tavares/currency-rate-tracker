@@ -30,13 +30,14 @@ class CotacaoControllerIT extends IntegrationTest {
     /** A AwesomeAPI real não é chamada em teste; {@link CotacaoClient} é trocado por um mock. */
     @Test
     void deveListarCotacoesAtuais() throws Exception {
-        Cotacao dolar = new Cotacao(
-                "USD",
-                "Dólar Americano",
-                new BigDecimal("5.42"),
-                new BigDecimal("0.23"),
-                LocalDateTime.of(2026, 8, 14, 10, 0));
-        when(cotacaoClient.buscarCotacoes(any())).thenReturn(List.of(dolar));
+        Cotacao cotacao = Cotacao.builder()
+                .codigo("USD")
+                .nome("Dólar Americano")
+                .valor(new BigDecimal("5.42"))
+                .variacaoPercentual(new BigDecimal("0.23"))
+                .dataCotacao(LocalDateTime.of(2026, 8, 14, 10, 0))
+                .build();
+        when(cotacaoClient.buscarCotacoes(any())).thenReturn(List.of(cotacao));
 
         mockMvc.perform(get("/cotacoes"))
                 .andExpect(status().isOk())

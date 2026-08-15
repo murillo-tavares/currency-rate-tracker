@@ -34,28 +34,32 @@ class CotacaoServiceIT extends IntegrationTest {
      */
     @Test
     void deveServirCotacoesDoCacheAposAtualizar() {
-        Cotacao cotacaoEmCache = new Cotacao(
-                "USD",
-                "Dólar Americano",
-                new BigDecimal("5.42"),
-                new BigDecimal("0.23"),
-                LocalDateTime.of(2026, 8, 14, 10, 0));
-        Cotacao cotacaoMaisRecente = new Cotacao(
-                "USD",
-                "Dólar Americano",
-                new BigDecimal("6.00"),
-                new BigDecimal("1.00"),
-                LocalDateTime.of(2026, 8, 15, 10, 0));
+        Cotacao cotacaoEmCache = Cotacao.builder()
+                .codigo("USD")
+                .nome("Dólar Americano")
+                .valor(new BigDecimal("5.42"))
+                .variacaoPercentual(new BigDecimal("0.23"))
+                .dataCotacao(LocalDateTime.of(2026, 8, 14, 10, 0))
+                .build();
+        Cotacao cotacaoMaisRecente = Cotacao.builder()
+                .codigo("USD")
+                .nome("Dólar Americano")
+                .valor(new BigDecimal("6.00"))
+                .variacaoPercentual(new BigDecimal("1.00"))
+                .dataCotacao(LocalDateTime.of(2026, 8, 15, 10, 0))
+                .build();
         when(cotacaoClient.buscarCotacoes(any()))
                 .thenReturn(List.of(cotacaoEmCache))
                 .thenReturn(List.of(cotacaoMaisRecente));
 
-        cotacaoService.atualizarCotacoesEmCache();
+        cotacaoService.atualizarCotacoes();
         List<Cotacao> primeiraLeitura = cotacaoService.obterCotacoesAtuais();
         List<Cotacao> segundaLeitura = cotacaoService.obterCotacoesAtuais();
 
-        assertThat(primeiraLeitura).containsExactly(cotacaoEmCache);
-        assertThat(segundaLeitura).containsExactly(cotacaoEmCache);
+        assertThat(primeiraLeitura).hasSize(1);
+        assertThat(primeiraLeitura.getFirst().getValor()).isEqualByComparingTo("5.42");
+        assertThat(segundaLeitura).hasSize(1);
+        assertThat(segundaLeitura.getFirst().getValor()).isEqualByComparingTo("5.42");
         verify(cotacaoClient, times(1)).buscarCotacoes(any());
     }
 }

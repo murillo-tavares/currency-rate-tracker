@@ -10,7 +10,6 @@ import org.springframework.web.client.RestClientException;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Implementação de {@link CotacaoClient} sobre a AwesomeAPI (https://docs.awesomeapi.com.br).
@@ -23,14 +22,12 @@ class AwesomeApiCotacaoClient implements CotacaoClient {
 
     @Override
     public List<Cotacao> buscarCotacoes(List<Moeda> moedas) {
-        String pares = moedas.stream()
-                .map(moeda -> moeda.getCodigo() + "-BRL")
-                .collect(Collectors.joining(","));
+        AwesomeApiCotacaoMapper mapper = new AwesomeApiCotacaoMapper(moedas);
 
         try {
-            Map<String, AwesomeApiCotacaoResponse> resposta = api.buscarUltimasCotacoes(pares);
+            Map<String, AwesomeApiCotacaoResponse> resposta = api.buscarUltimasCotacoes(mapper.paresConsulta());
             return resposta.values().stream()
-                    .map(AwesomeApiCotacaoResponse::paraCotacao)
+                    .map(mapper::paraCotacao)
                     .toList();
         } catch (RestClientException exception) {
             throw CotacaoIndisponivelException.falhaNaConsulta(exception);
