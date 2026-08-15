@@ -1,0 +1,19 @@
+server:
+  servlet:
+    context-path: /api/v1
+
+spring:
+  application:
+    name: currency-rate-tracker-api
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/currency_rate_tracker}
+    username: ${DB_USERNAME:currency_rate_tracker}
+    password: ${DB_PASSWORD:secret}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
