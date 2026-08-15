@@ -1,12 +1,16 @@
 package br.com.currencyratetracker.currency_rate_tracker_api.domain.service;
 
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.client.CotacaoClient;
+import br.com.currencyratetracker.currency_rate_tracker_api.domain.filter.FiltroDashboardCotacoes;
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.Cotacao;
+import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.DashboardCotacoes;
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.Moeda;
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.repository.CotacaoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +24,7 @@ import java.util.List;
 public class CotacaoService {
 
     public static final String CACHE_COTACOES = "cotacoes";
+    public static final String CACHE_DASHBOARD = "cotacoes-dashboard";
     private static final String CHAVE_CACHE_ATUAL = "'atual'";
 
     private final MoedaService moedaService;
@@ -38,6 +43,16 @@ public class CotacaoService {
         List<Cotacao> cotacoes = buscarCotacoesNaOrigem();
         cotacaoRepository.saveAll(cotacoes);
         return cotacoes;
+    }
+
+    /** Busca o dashboard de cotações (uma ou várias moedas) dentro do filtro informado. */
+    @Cacheable(cacheNames = CACHE_DASHBOARD)
+    public DashboardCotacoes buscarDashboard(FiltroDashboardCotacoes filtro) {
+        Specification<Cotacao> especificacao = filtro.toSpecification();
+        Sort ordenacaoPorData = Sort.by("dataCotacao").ascending();
+
+        List<Cotacao> cotacoes = cotacaoRepository.findAll(especificacao, ordenacaoPorData);
+        return DashboardCotacoes.de(cotacoes);
     }
 
     private List<Cotacao> buscarCotacoesNaOrigem() {

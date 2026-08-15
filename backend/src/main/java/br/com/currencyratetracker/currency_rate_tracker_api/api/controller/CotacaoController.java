@@ -1,11 +1,15 @@
 package br.com.currencyratetracker.currency_rate_tracker_api.api.controller;
 
 import br.com.currencyratetracker.currency_rate_tracker_api.api.dto.response.CotacaoResponse;
+import br.com.currencyratetracker.currency_rate_tracker_api.api.dto.response.DashboardCotacoesResponse;
 import br.com.currencyratetracker.currency_rate_tracker_api.api.mapper.CotacaoMapper;
+import br.com.currencyratetracker.currency_rate_tracker_api.domain.filter.FiltroDashboardCotacoes;
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.Cotacao;
+import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.DashboardCotacoes;
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.service.CotacaoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,5 +31,12 @@ public class CotacaoController {
     public List<CotacaoResponse> listar() {
         List<Cotacao> cotacoes = cotacaoService.obterCotacoesAtuais();
         return cotacaoMapper.toResponseList(cotacoes);
+    }
+
+    /** Dashboard de cotação (uma ou várias moedas) dentro do filtro informado. */
+    @GetMapping("/dashboard")
+    public DashboardCotacoesResponse buscarDashboard(@ModelAttribute FiltroDashboardCotacoes filtro) {
+        DashboardCotacoes dashboard = cotacaoService.buscarDashboard(filtro);
+        return cotacaoMapper.toDashboardResponse(dashboard);
     }
 }
