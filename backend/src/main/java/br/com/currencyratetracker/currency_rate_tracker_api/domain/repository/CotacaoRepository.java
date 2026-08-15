@@ -1,6 +1,6 @@
 package br.com.currencyratetracker.currency_rate_tracker_api.domain.repository;
 
-import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.Cotacao;
+import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.cotacao.Cotacao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 

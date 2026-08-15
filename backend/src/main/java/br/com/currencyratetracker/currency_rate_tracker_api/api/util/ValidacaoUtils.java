@@ -1,6 +1,6 @@
 package br.com.currencyratetracker.currency_rate_tracker_api.api.util;
 
-import br.com.currencyratetracker.currency_rate_tracker_api.api.dto.response.ErroResponse;
+import br.com.currencyratetracker.currency_rate_tracker_api.api.dto.erro.ErroResponse;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.web.bind.MethodArgumentNotValidException;

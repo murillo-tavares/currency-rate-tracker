@@ -1,8 +1,8 @@
 package br.com.currencyratetracker.currency_rate_tracker_api.api.controller;
 
-import br.com.currencyratetracker.currency_rate_tracker_api.api.dto.response.MoedaResponse;
+import br.com.currencyratetracker.currency_rate_tracker_api.api.dto.moeda.MoedaResponse;
 import br.com.currencyratetracker.currency_rate_tracker_api.api.mapper.MoedaMapper;
-import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.Moeda;
+import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.moeda.Moeda;
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.service.MoedaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

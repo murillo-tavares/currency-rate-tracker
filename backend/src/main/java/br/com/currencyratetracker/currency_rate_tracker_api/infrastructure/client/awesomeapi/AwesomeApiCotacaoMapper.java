@@ -1,7 +1,7 @@
 package br.com.currencyratetracker.currency_rate_tracker_api.infrastructure.client.awesomeapi;
 
-import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.Cotacao;
-import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.Moeda;
+import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.cotacao.Cotacao;
+import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.moeda.Moeda;
 
 import java.util.List;
 import java.util.Map;

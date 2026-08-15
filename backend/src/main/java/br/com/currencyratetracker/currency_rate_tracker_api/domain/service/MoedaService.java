@@ -1,6 +1,6 @@
 package br.com.currencyratetracker.currency_rate_tracker_api.domain.service;
 
-import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.Moeda;
+import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.moeda.Moeda;
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.repository.MoedaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

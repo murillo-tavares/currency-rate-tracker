@@ -1,7 +1,7 @@
 package br.com.currencyratetracker.currency_rate_tracker_api.domain.service;
 
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.client.CotacaoClient;
-import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.Cotacao;
+import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.cotacao.Cotacao;
 import br.com.currencyratetracker.currency_rate_tracker_api.support.suite.IntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

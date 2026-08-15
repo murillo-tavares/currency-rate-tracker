@@ -1,4 +1,4 @@
-package br.com.currencyratetracker.currency_rate_tracker_api.domain.model;
+package br.com.currencyratetracker.currency_rate_tracker_api.domain.model.moeda;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

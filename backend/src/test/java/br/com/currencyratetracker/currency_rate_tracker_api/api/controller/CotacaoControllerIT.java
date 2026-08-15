@@ -2,7 +2,7 @@ package br.com.currencyratetracker.currency_rate_tracker_api.api.controller;
 
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.client.CotacaoClient;
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.exception.client.CotacaoIndisponivelException;
-import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.Cotacao;
+import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.cotacao.Cotacao;
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.repository.CotacaoRepository;
 import br.com.currencyratetracker.currency_rate_tracker_api.support.suite.IntegrationTest;
 import org.junit.jupiter.api.Test;

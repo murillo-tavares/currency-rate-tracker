@@ -1,4 +1,4 @@
-package br.com.currencyratetracker.currency_rate_tracker_api.api.dto.response;
+package br.com.currencyratetracker.currency_rate_tracker_api.api.dto.erro;
 
 import br.com.currencyratetracker.currency_rate_tracker_api.api.util.WebRequestUtils;
 import com.fasterxml.jackson.annotation.JsonInclude;

@@ -2,8 +2,8 @@ package br.com.currencyratetracker.currency_rate_tracker_api.infrastructure.clie
 
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.client.CotacaoClient;
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.exception.client.CotacaoIndisponivelException;
-import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.Cotacao;
-import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.Moeda;
+import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.cotacao.Cotacao;
+import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.moeda.Moeda;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;

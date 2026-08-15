@@ -1,6 +1,6 @@
 package br.com.currencyratetracker.currency_rate_tracker_api.domain.filter;
 
-import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.Cotacao;
+import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.cotacao.Cotacao;
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.specification.CotacaoSpecifications;
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.specification.SpecificationBuilder;
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.util.CodigoMoedaUtils;

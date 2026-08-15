@@ -1,7 +1,7 @@
 package br.com.currencyratetracker.currency_rate_tracker_api.infrastructure.config;
 
-import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.Cotacao;
-import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.DashboardCotacoes;
+import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.cotacao.Cotacao;
+import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.cotacao.Dashboard;
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.service.CotacaoService;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,7 +25,7 @@ class RedisCacheConfig {
     RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer(ObjectMapper jackson2ObjectMapper) {
         JavaType tipoListaCotacao = jackson2ObjectMapper.getTypeFactory()
                 .constructCollectionType(List.class, Cotacao.class);
-        JavaType tipoDashboard = jackson2ObjectMapper.getTypeFactory().constructType(DashboardCotacoes.class);
+        JavaType tipoDashboard = jackson2ObjectMapper.getTypeFactory().constructType(Dashboard.class);
 
         RedisCacheConfiguration configuracaoCotacoes =
                 configuracaoJson(jackson2ObjectMapper, tipoListaCotacao, Duration.ofMinutes(5));

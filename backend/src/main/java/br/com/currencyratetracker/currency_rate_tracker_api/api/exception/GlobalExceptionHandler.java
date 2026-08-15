@@ -1,6 +1,6 @@
 package br.com.currencyratetracker.currency_rate_tracker_api.api.exception;
 
-import br.com.currencyratetracker.currency_rate_tracker_api.api.dto.response.ErroResponse;
+import br.com.currencyratetracker.currency_rate_tracker_api.api.dto.erro.ErroResponse;
 import br.com.currencyratetracker.currency_rate_tracker_api.api.util.ValidacaoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

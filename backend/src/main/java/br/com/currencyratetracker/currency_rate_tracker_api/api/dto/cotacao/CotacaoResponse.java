@@ -1,4 +1,4 @@
-package br.com.currencyratetracker.currency_rate_tracker_api.api.dto.response;
+package br.com.currencyratetracker.currency_rate_tracker_api.api.dto.cotacao;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

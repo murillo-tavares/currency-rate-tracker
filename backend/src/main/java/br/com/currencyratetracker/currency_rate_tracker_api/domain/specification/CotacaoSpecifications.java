@@ -1,6 +1,6 @@
 package br.com.currencyratetracker.currency_rate_tracker_api.domain.specification;
 
-import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.Cotacao;
+import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.cotacao.Cotacao;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
