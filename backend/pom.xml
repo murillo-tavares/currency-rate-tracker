@@ -48,6 +48,13 @@
 			<artifactId>spring-boot-http-client</artifactId>
 		</dependency>
 
+		<!-- Tratamento de erro -->
+		<dependency>
+			<groupId>org.zalando</groupId>
+			<artifactId>problem</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
 		<!-- Observabilidade -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

@@ -1,6 +1,7 @@
 package br.com.currencyratetracker.currency_rate_tracker_api.api.controller;
 
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.client.CotacaoClient;
+import br.com.currencyratetracker.currency_rate_tracker_api.domain.exception.client.CotacaoIndisponivelException;
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.Cotacao;
 import br.com.currencyratetracker.currency_rate_tracker_api.support.suite.IntegrationTest;
 import org.junit.jupiter.api.Test;
@@ -42,5 +43,16 @@ class CotacaoControllerIT extends IntegrationTest {
                 .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(jsonPath("$[0].codigo").value("USD"))
                 .andExpect(jsonPath("$[0].valor").value(5.42));
+    }
+
+    /** Falha na origem vira um erro de negócio (503), não um 500 genérico. */
+    @Test
+    void deveRetornar503QuandoAwesomeApiFalha() throws Exception {
+        when(cotacaoClient.buscarCotacoes(any()))
+                .thenThrow(CotacaoIndisponivelException.falhaNaConsulta(new RuntimeException("timeout")));
+
+        mockMvc.perform(get("/cotacoes"))
+                .andExpect(status().isServiceUnavailable())
+                .andExpect(jsonPath("$.codigo").value(CotacaoIndisponivelException.CODIGO));
     }
 }
