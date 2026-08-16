@@ -67,6 +67,24 @@ class CotacaoServiceIT extends IntegrationTest {
         verify(cotacaoClient, times(1)).buscarCotacoes(any());
     }
 
+    /** A AwesomeAPI repetiu a mesma data_cotacao no segundo ciclo — nada de novo pra persistir. */
+    @Test
+    void naoDeveDuplicarCotacaoQuandoAwesomeApiRepeteAMesmaData() {
+        Cotacao cotacao = Cotacao.builder()
+                .codigoMoeda("USD")
+                .nome("Dólar Americano")
+                .valor(new BigDecimal("5.42"))
+                .variacaoPercentual(new BigDecimal("0.23"))
+                .dataCotacao(LocalDateTime.of(2026, 8, 14, 10, 0))
+                .build();
+        when(cotacaoClient.buscarCotacoes(any())).thenReturn(List.of(cotacao));
+
+        cotacaoService.atualizarCotacoes();
+        cotacaoService.atualizarCotacoes();
+
+        assertThat(cotacaoRepository.findAll()).hasSize(1);
+    }
+
     /** Filtrado por código, não passa pelo cache — sempre reflete o estado atual do banco. */
     @Test
     void naoDeveCachearLeituraFiltradaPorCodigo() {

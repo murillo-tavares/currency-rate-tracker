@@ -6,6 +6,7 @@ import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.cotacao
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.cotacao.Dashboard;
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.moeda.Moeda;
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.repository.CotacaoRepository;
+import br.com.currencyratetracker.currency_rate_tracker_api.domain.util.CotacaoUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -39,12 +40,16 @@ public class CotacaoService {
                 : cotacaoRepository.buscarUltimaCotacao();
     }
 
-    /** Consulta a AwesomeAPI, persiste a cotação e atualiza o cache. Chamado pelo job agendado. */
+    /** Consulta a AwesomeAPI e persiste só as cotações que mudaram desde a última consulta. Chamado pelo job agendado. */
     @CachePut(cacheNames = CACHE_COTACOES, key = CHAVE_CACHE_ATUAL)
     public List<Cotacao> atualizarCotacoes() {
         List<Moeda> moedas = moedaService.listar();
         List<Cotacao> cotacoes = cotacaoClient.buscarCotacoes(moedas);
-        cotacaoRepository.saveAll(cotacoes);
+
+        List<Cotacao> ultimasCotacoes = cotacaoRepository.buscarUltimaCotacao();
+        List<Cotacao> cotacoesAlteradas = CotacaoUtils.filtrarAlteradas(cotacoes, ultimasCotacoes);
+        cotacaoRepository.saveAll(cotacoesAlteradas);
+
         return cotacoes;
     }
 
