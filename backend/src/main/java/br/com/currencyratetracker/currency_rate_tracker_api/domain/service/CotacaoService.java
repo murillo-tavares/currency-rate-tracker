@@ -16,8 +16,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * Regras de negócio de cotação de moedas. Busca as moedas do catálogo e delega a consulta
- * dos valores atuais ao {@link CotacaoClient}, guardando o resultado em cache.
+ * Regras de negócio de cotação de moedas. Leitura vem do banco (guardada em cache); a
+ * atualização a partir da AwesomeAPI é feita pelo job agendado.
  */
 @Service
 @RequiredArgsConstructor
@@ -31,16 +31,17 @@ public class CotacaoService {
     private final CotacaoRepository cotacaoRepository;
     private final CotacaoClient cotacaoClient;
 
-    /** Lê a cotação atual do cache; se ainda não populado, consulta a AwesomeAPI na hora. */
+    /** Lê a última cotação de cada moeda a partir do banco; servida pelo cache. */
     @Cacheable(cacheNames = CACHE_COTACOES, key = CHAVE_CACHE_ATUAL)
     public List<Cotacao> obterCotacoesAtuais() {
-        return buscarCotacoesNaOrigem();
+        return cotacaoRepository.buscarUltimaCotacaoPorMoeda();
     }
 
-    /** Consulta a AwesomeAPI, atualiza o cache e persiste a cotação. Chamado pelo job agendado. */
+    /** Consulta a AwesomeAPI, persiste a cotação e atualiza o cache. Chamado pelo job agendado. */
     @CachePut(cacheNames = CACHE_COTACOES, key = CHAVE_CACHE_ATUAL)
     public List<Cotacao> atualizarCotacoes() {
-        List<Cotacao> cotacoes = buscarCotacoesNaOrigem();
+        List<Moeda> moedas = moedaService.listar();
+        List<Cotacao> cotacoes = cotacaoClient.buscarCotacoes(moedas);
         cotacaoRepository.saveAll(cotacoes);
         return cotacoes;
     }
@@ -53,10 +54,5 @@ public class CotacaoService {
 
         List<Cotacao> cotacoes = cotacaoRepository.findAll(especificacao, ordenacaoPorData);
         return Dashboard.de(cotacoes);
-    }
-
-    private List<Cotacao> buscarCotacoesNaOrigem() {
-        List<Moeda> moedas = moedaService.listar();
-        return cotacaoClient.buscarCotacoes(moedas);
     }
 }
