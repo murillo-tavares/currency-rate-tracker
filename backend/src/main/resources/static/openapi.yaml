@@ -32,9 +32,21 @@ paths:
   /cotacoes:
     get:
       tags: [Cotação]
-      summary: Lista a cotação atual de todas as moedas do catálogo
-      description: Servido a partir do cache, atualizado periodicamente por um job agendado.
+      summary: Lista a cotação atual das moedas do catálogo (ou só as informadas)
+      description: >-
+        Servido a partir do banco (última cotação de cada moeda), com cache quando não há
+        filtro por código.
       operationId: listarCotacoesAtuais
+      parameters:
+        - name: codigosMoeda
+          in: query
+          description: Códigos das moedas a filtrar. Sem filtro, retorna todas.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+          example: [USD, EUR]
       responses:
         "200":
           description: Cotações atuais
@@ -44,12 +56,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/CotacaoResponse"
-        "503":
-          description: Falha ao consultar a origem das cotações
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Erro"
 
   /cotacoes/dashboard:
     get:
@@ -153,20 +159,3 @@ components:
         dataCotacao:
           type: string
           format: date-time
-
-    Erro:
-      type: object
-      properties:
-        status:
-          type: integer
-        error:
-          type: string
-        codigo:
-          type: string
-          description: Código do erro de negócio (catálogo interno). Ausente em erros de framework/validação.
-          nullable: true
-          example: COTACAO_INDISPONIVEL
-        message:
-          type: string
-        path:
-          type: string

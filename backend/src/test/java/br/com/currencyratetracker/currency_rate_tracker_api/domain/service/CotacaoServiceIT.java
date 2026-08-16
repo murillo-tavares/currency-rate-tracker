@@ -2,6 +2,7 @@ package br.com.currencyratetracker.currency_rate_tracker_api.domain.service;
 
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.client.CotacaoClient;
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.cotacao.Cotacao;
+import br.com.currencyratetracker.currency_rate_tracker_api.domain.repository.CotacaoRepository;
 import br.com.currencyratetracker.currency_rate_tracker_api.support.suite.IntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ class CotacaoServiceIT extends IntegrationTest {
 
     @Autowired
     private CotacaoService cotacaoService;
+
+    @Autowired
+    private CotacaoRepository cotacaoRepository;
 
     @MockitoBean
     private CotacaoClient cotacaoClient;
@@ -53,13 +57,36 @@ class CotacaoServiceIT extends IntegrationTest {
                 .thenReturn(List.of(cotacaoMaisRecente));
 
         cotacaoService.atualizarCotacoes();
-        List<Cotacao> primeiraLeitura = cotacaoService.obterCotacoesAtuais();
-        List<Cotacao> segundaLeitura = cotacaoService.obterCotacoesAtuais();
+        List<Cotacao> primeiraLeitura = cotacaoService.obterCotacoesAtuais(null);
+        List<Cotacao> segundaLeitura = cotacaoService.obterCotacoesAtuais(null);
 
         assertThat(primeiraLeitura).hasSize(1);
         assertThat(primeiraLeitura.getFirst().getValor()).isEqualByComparingTo("5.42");
         assertThat(segundaLeitura).hasSize(1);
         assertThat(segundaLeitura.getFirst().getValor()).isEqualByComparingTo("5.42");
         verify(cotacaoClient, times(1)).buscarCotacoes(any());
+    }
+
+    /** Filtrado por código, não passa pelo cache — sempre reflete o estado atual do banco. */
+    @Test
+    void naoDeveCachearLeituraFiltradaPorCodigo() {
+        salvarCotacao("USD", "5.00", LocalDateTime.now().minusHours(1));
+        List<Cotacao> primeiraLeitura = cotacaoService.obterCotacoesAtuais(List.of("USD"));
+
+        salvarCotacao("USD", "9.99", LocalDateTime.now());
+        List<Cotacao> segundaLeitura = cotacaoService.obterCotacoesAtuais(List.of("USD"));
+
+        assertThat(primeiraLeitura.getFirst().getValor()).isEqualByComparingTo("5.00");
+        assertThat(segundaLeitura.getFirst().getValor()).isEqualByComparingTo("9.99");
+    }
+
+    private void salvarCotacao(String codigoMoeda, String valor, LocalDateTime dataCotacao) {
+        cotacaoRepository.save(Cotacao.builder()
+                .codigoMoeda(codigoMoeda)
+                .nome(codigoMoeda)
+                .valor(new BigDecimal(valor))
+                .variacaoPercentual(BigDecimal.ZERO)
+                .dataCotacao(dataCotacao)
+                .build());
     }
 }

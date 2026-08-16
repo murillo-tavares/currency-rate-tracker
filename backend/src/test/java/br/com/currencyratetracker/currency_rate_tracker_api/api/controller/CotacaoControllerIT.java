@@ -51,6 +51,20 @@ class CotacaoControllerIT extends IntegrationTest {
                 .andExpect(jsonPath("$[0].valor").value(5.42));
     }
 
+    /** Filtra as cotações atuais pelas moedas informadas. */
+    @Test
+    void deveFiltrarCotacoesAtuaisPorCodigo() throws Exception {
+        salvarCotacao("USD", "5.42", LocalDateTime.now().minusHours(1));
+        salvarCotacao("EUR", "6.10", LocalDateTime.now().minusHours(1));
+        salvarCotacao("GBP", "7.00", LocalDateTime.now().minusHours(1));
+
+        mockMvc.perform(get("/cotacoes").param("codigosMoeda", "USD", "EUR"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].codigoMoeda").value("EUR"))
+                .andExpect(jsonPath("$[1].codigoMoeda").value("USD"));
+    }
+
     @Test
     void deveListarDashboardFiltradoPorCodigos() throws Exception {
         salvarCotacao("USD", "5.42", LocalDateTime.now().minusHours(1));

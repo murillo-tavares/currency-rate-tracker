@@ -31,10 +31,14 @@ public class CotacaoService {
     private final CotacaoRepository cotacaoRepository;
     private final CotacaoClient cotacaoClient;
 
-    /** Lê a última cotação de cada moeda a partir do banco; servida pelo cache. */
-    @Cacheable(cacheNames = CACHE_COTACOES, key = CHAVE_CACHE_ATUAL)
-    public List<Cotacao> obterCotacoesAtuais() {
-        return cotacaoRepository.buscarUltimaCotacaoPorMoeda();
+    /** Lê a última cotação de cada moeda (ou só as informadas) a partir do banco; sem filtro, servida pelo cache. */
+    @Cacheable(cacheNames = CACHE_COTACOES, key = CHAVE_CACHE_ATUAL, condition = "#codigosMoeda == null")
+    public List<Cotacao> obterCotacoesAtuais(List<String> codigosMoeda) {
+        List<String> codigos = codigosMoeda != null
+                ? codigosMoeda
+                : moedaService.listar().stream().map(Moeda::getCodigo).toList();
+
+        return cotacaoRepository.buscarUltimaCotacaoPorMoeda(codigos);
     }
 
     /** Consulta a AwesomeAPI, persiste a cotação e atualiza o cache. Chamado pelo job agendado. */

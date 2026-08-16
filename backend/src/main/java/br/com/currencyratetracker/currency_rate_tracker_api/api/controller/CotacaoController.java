@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -26,10 +27,10 @@ public class CotacaoController {
     private final CotacaoService cotacaoService;
     private final CotacaoMapper cotacaoMapper;
 
-    /** Lista a cotação atual de todas as moedas do catálogo, servida a partir do cache. */
+    /** Lista a cotação atual das moedas do catálogo (ou só as informadas), servida a partir do cache. */
     @GetMapping
-    public List<CotacaoResponse> listar() {
-        List<Cotacao> cotacoes = cotacaoService.obterCotacoesAtuais();
+    public List<CotacaoResponse> listar(@RequestParam(required = false) List<String> codigosMoeda) {
+        List<Cotacao> cotacoes = cotacaoService.obterCotacoesAtuais(codigosMoeda);
         return cotacaoMapper.toResponseList(cotacoes);
     }
 
