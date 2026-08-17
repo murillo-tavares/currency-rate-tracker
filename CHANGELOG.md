@@ -5,6 +5,27 @@ Todas as mudanças notáveis deste projeto serão documentadas neste arquivo.
 O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [1.1.0] - 2026-08-17
+
+### Added
+- Cadastro de usuário (`POST /usuarios`).
+- Login com JWT (`POST /auth/login`).
+- Favoritos de moeda para o usuário autenticado (`GET`/`POST`/`DELETE /favoritos`), únicos
+  endpoints protegidos por autenticação da API.
+- README na raiz do repositório e collection Postman.
+
+### Changed
+- Repositórios de moeda, usuário e favorito passaram a usar `Specification` em vez de query
+  method derivada, no mesmo padrão já usado em cotação.
+- Índice de `cotacao` ajustado para casar com a ordenação usada na consulta de última
+  cotação por moeda.
+
+### Fixed
+- Mensagens de validação de cadastro/login, que expunham o texto padrão do Bean Validation
+  (`Integer.MAX_VALUE` na mensagem de tamanho de senha).
+
+[1.1.0]: https://github.com/murillo-tavares/currency-rate-tracker/releases/tag/v1.1.0
+
 ## [1.0.0] - 2026-08-17
 
 ### Added
