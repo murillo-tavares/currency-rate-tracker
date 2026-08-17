@@ -20,6 +20,10 @@ cadastro de usuário, login e favoritos. Backend (Spring Boot) e frontend (Angul
 > ⚠️ Backend hospedado no plano free do Render: a instância dorme por inatividade, então o primeiro acesso (seja
 > no frontend ou na documentação) pode demorar cerca de 1 minuto pra responder.
 
+> ⚠️ A atualização periódica de cotações depende da [AwesomeAPI](https://docs.awesomeapi.com.br/api-de-moedas),
+> que limita requisições não autenticadas a 100 e autenticadas a 1500. A integração atual não é autenticada,
+> então é possível que as cotações parem de atualizar depois de um tempo, ao atingir esse limite.
+
 ## 🚀 Como executar
 
 Sobe Postgres + Redis + API + frontend:
