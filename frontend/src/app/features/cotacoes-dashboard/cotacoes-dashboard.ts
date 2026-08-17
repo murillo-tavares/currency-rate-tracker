@@ -21,6 +21,10 @@ interface Resultado {
   dashboard: DashboardCotacoes;
 }
 
+/**
+ * Tela principal: cotações atuais e dashboard em gráfico, atualizados a cada
+ * INTERVALO_ATUALIZACAO_MS e cruzados com os favoritos do usuário logado, se houver.
+ */
 @Component({
   selector: 'app-cotacoes-dashboard',
   imports: [CurrencyCard, PeriodSelector],
@@ -59,6 +63,7 @@ export class CotacoesDashboard {
   );
 
   constructor() {
+    // Token expirado ao listar favoritos: desloga, já que a sessão local não é mais válida.
     toObservable(this.authService.usuarioLogado)
       .pipe(
         switchMap((usuario) =>
@@ -79,6 +84,8 @@ export class CotacoesDashboard {
 
     const selecaoPeriodo$ = toObservable(this.selecaoPeriodo);
 
+    // Poll periódico. Em erro, mantém o último resultado válido na tela em vez de
+    // esvaziar os cards, para uma falha passageira de rede não piscar a UI.
     combineLatest([timer(0, INTERVALO_ATUALIZACAO_MS), selecaoPeriodo$])
       .pipe(
         switchMap(([, selecao]) =>
@@ -110,6 +117,10 @@ export class CotacoesDashboard {
     this.selecaoPeriodo.set(selecao);
   }
 
+  /**
+   * Adiciona/remove o favorito no servidor e só depois atualiza o estado local, evitando
+   * UI dessincronizada se a chamada falhar. Erro 401 (token expirado) desloga e reabre o login.
+   */
   protected alternarFavorita(codigoMoeda: string): void {
     if (!this.authService.usuarioLogado()) {
       this.authService.solicitarAutenticacao();

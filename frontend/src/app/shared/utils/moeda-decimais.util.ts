@@ -1,5 +1,6 @@
 const DECIMAIS_PADRAO = 2;
 
+/** Moedas cujo valor em Real fica pequeno demais com 2 casas usam mais casas decimais, para não arredondar para zero. */
 const DECIMAIS_POR_MOEDA: Record<string, number> = {
   ARS: 4,
   JPY: 4,

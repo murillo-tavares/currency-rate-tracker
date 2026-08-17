@@ -19,7 +19,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/** Único teste que precisa do cache de verdade ligado — sobrescreve o padrão de {@link IntegrationTest}. */
+/** Único teste que precisa do cache de verdade ligado; sobrescreve o padrão de {@link IntegrationTest}. */
 @TestPropertySource(properties = "spring.cache.type=redis")
 class CotacaoServiceIT extends IntegrationTest {
 
@@ -67,7 +67,7 @@ class CotacaoServiceIT extends IntegrationTest {
         verify(cotacaoClient, times(1)).buscarCotacoes(any());
     }
 
-    /** A AwesomeAPI repetiu a mesma data_cotacao no segundo ciclo — nada de novo pra persistir. */
+    /** A AwesomeAPI repetiu a mesma data_cotacao no segundo ciclo: nada de novo pra persistir. */
     @Test
     void naoDeveDuplicarCotacaoQuandoAwesomeApiRepeteAMesmaData() {
         Cotacao cotacao = Cotacao.builder()
@@ -85,7 +85,7 @@ class CotacaoServiceIT extends IntegrationTest {
         assertThat(cotacaoRepository.findAll()).hasSize(1);
     }
 
-    /** Filtrado por código, não passa pelo cache — sempre reflete o estado atual do banco. */
+    /** Filtrado por código, não passa pelo cache; sempre reflete o estado atual do banco. */
     @Test
     void naoDeveCachearLeituraFiltradaPorCodigo() {
         salvarCotacao("USD", "5.00", LocalDateTime.now().minusHours(1));

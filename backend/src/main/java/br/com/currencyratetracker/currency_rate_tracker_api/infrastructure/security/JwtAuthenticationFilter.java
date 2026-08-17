@@ -17,7 +17,7 @@ import java.util.UUID;
 
 /**
  * Lê o Bearer token do header Authorization e autentica a requisição, se válido.
- * Token ausente/inválido segue sem autenticação — quem decide se bloqueia é o {@link SecurityConfig}.
+ * Token ausente/inválido segue sem autenticação; quem decide se bloqueia é o {@link SecurityConfig}.
  */
 @Component
 @RequiredArgsConstructor

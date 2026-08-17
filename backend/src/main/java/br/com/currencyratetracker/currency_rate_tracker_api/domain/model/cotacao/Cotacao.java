@@ -19,9 +19,9 @@ import java.util.UUID;
 
 /**
  * Cotação de uma moeda em relação ao Real (BRL), consultada na AwesomeAPI e persistida a
- * cada atualização do cache — a série de registros ao longo do tempo alimenta o gráfico.
+ * cada atualização do cache. A série de registros ao longo do tempo alimenta o gráfico.
  * Guarda o código e o nome da moeda direto (sem join column), evitando consulta extra pra
- * exibir a cotação — quem precisar cruzar com o catálogo faz isso explicitamente na query.
+ * exibir a cotação; quem precisar cruzar com o catálogo faz isso explicitamente na query.
  */
 @Entity
 @Table(name = "cotacao")

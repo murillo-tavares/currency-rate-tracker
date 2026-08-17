@@ -7,6 +7,10 @@ export interface CardVisivel {
   favorita: boolean;
 }
 
+/**
+ * Junta cotação atual, série histórica (gráfico) e favoritos num único card por moeda,
+ * casando pelo codigoMoeda. Moeda sem histórico ainda entra com pontos vazios.
+ */
 export function montarCards(
   cotacoes: Cotacao[],
   graficos: GraficoCotacao[],

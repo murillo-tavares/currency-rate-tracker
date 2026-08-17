@@ -6,6 +6,7 @@ export interface SessaoUsuario {
 
 const CHAVE_SESSAO = 'currency-rate-tracker:sessao';
 
+/** Lê a sessão salva. Falha de parse (storage corrompido ou alterado por fora) retorna null em vez de quebrar a aplicação. */
 export function carregarSessao(): SessaoUsuario | null {
   try {
     const bruto = localStorage.getItem(CHAVE_SESSAO);

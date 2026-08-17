@@ -20,7 +20,7 @@ export class AuthService {
   private readonly sessao = signal<SessaoUsuario | null>(carregarSessao());
   readonly usuarioLogado = this.sessao.asReadonly();
 
-  /** Emite a cada pedido de autenticação — quem exibe a UI de login (AuthModal) se inscreve nisso. */
+  /** Emite a cada pedido de autenticação. Quem exibe a UI de login (AuthModal) se inscreve nisso. */
   private readonly pedido$ = new Subject<void>();
   readonly pedidoAutenticacao$ = this.pedido$.asObservable();
 
@@ -33,14 +33,14 @@ export class AuthService {
     this.pedido$.next();
   }
 
-  /** O login não devolve o nome — só o cadastro devolve. */
+  /** O login não devolve o nome, só o cadastro devolve. */
   login(email: string, senha: string): Observable<void> {
     return this.http
       .post<LoginResponse>(`${this.baseUrlAuth}/login`, { email, senha })
       .pipe(map(({ token }) => this.definirSessao({ token, email })));
   }
 
-  /** Cadastra e, na sequência, autentica com as mesmas credenciais — o cadastro sozinho não devolve token. */
+  /** Cadastra e, na sequência, autentica com as mesmas credenciais, pois o cadastro sozinho não devolve token. */
   cadastrar(email: string, nome: string, senha: string): Observable<void> {
     return this.http.post<UsuarioResponse>(this.baseUrlUsuarios, { email, nome, senha }).pipe(
       switchMap(() => this.http.post<LoginResponse>(`${this.baseUrlAuth}/login`, { email, senha })),

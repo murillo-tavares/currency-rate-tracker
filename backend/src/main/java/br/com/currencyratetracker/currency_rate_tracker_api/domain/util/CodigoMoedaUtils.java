@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CodigoMoedaUtils {
 
-    /** Ordena e remove duplicados — mesma entrada sempre produz a mesma saída. {@code null}/vazio retorna {@code null}. */
+    /** Ordena e remove duplicados: mesma entrada sempre produz a mesma saída. {@code null}/vazio retorna {@code null}. */
     public static List<String> ordenarSemDuplicados(List<String> codigosMoeda) {
         return CollectionUtils.isEmpty(codigosMoeda)
                 ? null

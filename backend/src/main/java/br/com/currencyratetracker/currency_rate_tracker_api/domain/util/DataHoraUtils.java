@@ -12,7 +12,7 @@ import java.time.temporal.ChronoUnit;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DataHoraUtils {
 
-    /** Trunca segundos/nanos — datas próximas caem no mesmo valor. {@code null} retorna {@code null}. */
+    /** Trunca segundos/nanos: datas próximas caem no mesmo valor. {@code null} retorna {@code null}. */
     public static LocalDateTime arredondarParaMinuto(LocalDateTime data) {
         return data != null
                 ? data.truncatedTo(ChronoUnit.MINUTES)

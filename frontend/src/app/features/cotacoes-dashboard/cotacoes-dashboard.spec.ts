@@ -95,7 +95,7 @@ describe('CotacoesDashboard', () => {
     });
 
     it('antes de conseguir conectar pela primeira vez, mostra "iniciando" em vez de parecer erro', async () => {
-      // forkJoin cancela a outra request assim que uma das duas falha — só erra uma.
+      // forkJoin cancela a outra request assim que uma das duas falha; só erra uma.
       httpMock.expectOne((r) => r.url === baseUrl).error(new ProgressEvent('erro de rede'));
       httpMock.expectOne((r) => r.url === `${baseUrl}/dashboard`);
       await vi.advanceTimersByTimeAsync(0);

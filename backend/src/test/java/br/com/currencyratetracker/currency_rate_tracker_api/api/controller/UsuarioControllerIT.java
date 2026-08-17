@@ -51,7 +51,7 @@ class UsuarioControllerIT extends IntegrationTest {
                 .andExpect(status().isBadRequest());
     }
 
-    /** Confirma a mensagem customizada — sem isso, o padrão do Bean Validation soa "entre 6 e 2147483647". */
+    /** Confirma a mensagem customizada; sem isso, o padrão do Bean Validation soa "entre 6 e 2147483647". */
     @Test
     void deveRejeitarSenhaMenorQueOMinimoComMensagemClara() throws Exception {
         mockMvc.perform(post("/usuarios")

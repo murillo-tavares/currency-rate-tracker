@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * Regras de negócio do catálogo de moedas. Trabalha só com o domínio ({@link Moeda}) —
+ * Regras de negócio do catálogo de moedas. Trabalha só com o domínio ({@link Moeda});
  * conversão para/de DTO é responsabilidade da camada de API.
  */
 @Service

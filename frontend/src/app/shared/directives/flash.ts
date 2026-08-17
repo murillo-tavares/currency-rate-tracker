@@ -4,6 +4,10 @@ const DURACAO_FLASH_MS = 900;
 
 export type Flash = 'up' | 'down' | null;
 
+/**
+ * Marca o elemento hospedeiro por um instante quando o valor observado (appFlash) muda,
+ * verde se subiu e vermelho se desceu, para sinalizar atualização de preço em tempo real.
+ */
 @Directive({
   selector: '[appFlash]',
   host: {

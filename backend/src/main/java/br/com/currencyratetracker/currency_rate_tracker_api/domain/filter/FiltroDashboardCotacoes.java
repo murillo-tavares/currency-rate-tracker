@@ -24,7 +24,7 @@ public record FiltroDashboardCotacoes(
     private static final int INTERVALO_PADRAO_HORAS = 24;
 
     public FiltroDashboardCotacoes {
-        // Sem início, evita consulta sem limite inferior; sem fim não há problema — não existe cotação além de agora.
+        // Sem início, evita consulta sem limite inferior; sem fim não há problema, pois não existe cotação além de agora.
         LocalDateTime inicioComPadrao = inicio != null ? inicio : LocalDateTime.now().minusHours(INTERVALO_PADRAO_HORAS);
 
         codigosMoeda = CodigoMoedaUtils.ordenarSemDuplicados(codigosMoeda);

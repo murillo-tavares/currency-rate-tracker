@@ -8,6 +8,10 @@ export interface FiltroPeriodo {
   fim?: string;
 }
 
+/**
+ * Formata mantendo a hora local. Não usa toISOString, que converteria para UTC e
+ * deslocaria o filtro, já que o backend interpreta a data recebida como horário local.
+ */
 function paraLocalDateTime(data: Date): string {
   const pad = (n: number) => n.toString().padStart(2, '0');
   return (

@@ -7,6 +7,10 @@ import { AuthService } from '../../../core/services/auth';
 
 type ModoAuth = 'login' | 'cadastro';
 
+/**
+ * Abre sozinho ao ouvir AuthService.pedidoAutenticacao$, então qualquer parte da
+ * aplicação pode pedir login sem conhecer este componente diretamente.
+ */
 @Component({
   selector: 'app-auth-modal',
   imports: [FormsModule],

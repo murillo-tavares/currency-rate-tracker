@@ -16,6 +16,7 @@ import { MoedaBrlPipe } from '../../pipes/moeda-brl-pipe';
 import { lerVariavelCss } from '../../utils/css-var.util';
 import { formatarDataHora } from '../../utils/data-hora.util';
 
+// Registra só os módulos usados pelo sparkline, evita empacotar o Chart.js inteiro.
 Chart.register(LineController, LineElement, PointElement, LinearScale, Tooltip);
 
 @Component({
@@ -30,8 +31,10 @@ export class Sparkline {
   readonly codigoMoeda = input.required<string>();
   readonly cor = input<string>('currentColor');
 
+  /** Instanciado direto: usado no callback do tooltip do Chart.js, fora do template Angular. */
   private readonly moedaBrlPipe = new MoedaBrlPipe();
 
+  /** Chart.js não desenha linha com um único ponto; duplica para formar um segmento visível. */
   protected readonly pontosAjustados = computed(() => {
     const pontos = this.pontos();
     return pontos.length === 1 ? [pontos[0], pontos[0]] : pontos;

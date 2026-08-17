@@ -17,7 +17,7 @@ import java.util.UUID;
 public interface CotacaoRepository extends JpaRepository<Cotacao, UUID>, JpaSpecificationExecutor<Cotacao> {
 
     /**
-     * Última cotação registrada de cada moeda. Desempata por {@code data_criacao} — a AwesomeAPI
+     * Última cotação registrada de cada moeda. Desempata por {@code data_criacao}, pois a AwesomeAPI
      * pode repetir a mesma {@code data_cotacao} entre ciclos do scheduler quando a moeda não é
      * atualizada na origem, e nesse caso o registro mais recente deve prevalecer.
      */

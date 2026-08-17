@@ -67,7 +67,7 @@ describe('AuthModal', () => {
 
   /**
    * dispatchEvent(new Event('submit')) pula a validação nativa do form (não passa pelo
-   * "algoritmo de submissão" do browser) — só um clique de verdade no botão de submit exercita
+   * "algoritmo de submissão" do browser); só um clique de verdade no botão de submit exercita
    * a validação nativa (required/minlength/type=email) de verdade.
    */
   function clicarEnviar(): void {
@@ -234,7 +234,7 @@ describe('AuthModal', () => {
 
     it('exige pelo menos 6 caracteres de senha', () => {
       // tooShort/minlength só valida em valor digitado por interação real do usuário (flag
-      // interna do browser) — setar .value programaticamente não ativa isso, em nenhum browser.
+      // interna do browser); setar .value programaticamente não ativa isso, em nenhum browser.
       // Verifica o atributo em vez de tentar simular a "sujeira" que só um keystroke real seta.
       pedirAutenticacao();
 
