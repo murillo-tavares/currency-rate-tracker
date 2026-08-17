@@ -5,6 +5,22 @@ Todas as mudanças notáveis deste projeto serão documentadas neste arquivo.
 O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [1.1.1] - 2026-08-17
+
+### Added
+- Configuração de `API_URL` do backend em build time do frontend (`.env` ou variável de
+  ambiente), para o frontend hospedado apontar pro backend hospedado.
+- Properties de autenticação e TLS na conexão com Redis, para hospedar em provedores como
+  o Upstash.
+- README com seção de aplicação hospedada e environment Postman apontando pro Render.
+- Comentários explicativos em pontos não óbvios do backend e do frontend.
+
+### Changed
+- CORS liberado para qualquer origem, necessário com backend e frontend hospedados em
+  domínios diferentes.
+
+[1.1.1]: https://github.com/murillo-tavares/currency-rate-tracker/releases/tag/v1.1.1
+
 ## [1.1.0] - 2026-08-17
 
 ### Added
