@@ -1,60 +1,61 @@
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 
+import { environment } from '../../../environments/environment';
 import { FavoritasService } from './favoritas';
 
 describe('FavoritasService', () => {
   let service: FavoritasService;
+  let httpMock: HttpTestingController;
+  const baseUrl = `${environment.apiUrl}/favoritos`;
 
   beforeEach(() => {
-    localStorage.clear();
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    });
     service = TestBed.inject(FavoritasService);
+    httpMock = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => {
+    httpMock.verify();
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('lista vazio quando nada foi salvo ainda', () => {
+  it('lista os códigos das moedas favoritas', () => {
     let resultado: string[] | undefined;
     service.listar().subscribe((codigos) => (resultado = codigos));
 
-    expect(resultado).toEqual([]);
-  });
-
-  it('salva e depois lista os códigos persistidos', () => {
-    service.salvar(['USD', 'BTC']).subscribe();
-
-    let resultado: string[] | undefined;
-    service.listar().subscribe((codigos) => (resultado = codigos));
+    const req = httpMock.expectOne(baseUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush([{ codigoMoeda: 'USD' }, { codigoMoeda: 'BTC' }]);
 
     expect(resultado).toEqual(['USD', 'BTC']);
   });
 
-  it('adiciona um código que ainda não é favorito', () => {
-    service.salvar(['USD']).subscribe();
+  it('adiciona uma moeda aos favoritos', () => {
+    let concluiu = false;
+    service.adicionar('USD').subscribe(() => (concluiu = true));
 
-    let resultado: string[] | undefined;
-    service.alternar('BTC').subscribe((codigos) => (resultado = codigos));
+    const req = httpMock.expectOne(`${baseUrl}/USD`);
+    expect(req.request.method).toBe('POST');
+    req.flush(null, { status: 204, statusText: 'No Content' });
 
-    expect(resultado).toEqual(['USD', 'BTC']);
+    expect(concluiu).toBe(true);
   });
 
-  it('remove um código que já é favorito', () => {
-    service.salvar(['USD', 'BTC']).subscribe();
+  it('remove uma moeda dos favoritos', () => {
+    let concluiu = false;
+    service.remover('USD').subscribe(() => (concluiu = true));
 
-    let resultado: string[] | undefined;
-    service.alternar('USD').subscribe((codigos) => (resultado = codigos));
+    const req = httpMock.expectOne(`${baseUrl}/USD`);
+    expect(req.request.method).toBe('DELETE');
+    req.flush(null, { status: 204, statusText: 'No Content' });
 
-    expect(resultado).toEqual(['BTC']);
-  });
-
-  it('persiste o resultado do alternar', () => {
-    service.alternar('EUR').subscribe();
-
-    let resultado: string[] | undefined;
-    service.listar().subscribe((codigos) => (resultado = codigos));
-
-    expect(resultado).toEqual(['EUR']);
+    expect(concluiu).toBe(true);
   });
 });

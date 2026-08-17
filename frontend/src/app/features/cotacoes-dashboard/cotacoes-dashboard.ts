@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { catchError, combineLatest, forkJoin, of, switchMap, tap, timer } from 'rxjs';
@@ -5,6 +6,7 @@ import { catchError, combineLatest, forkJoin, of, switchMap, tap, timer } from '
 import { Cotacao } from '../../core/models/cotacao.model';
 import { DashboardCotacoes } from '../../core/models/dashboard.model';
 import { SelecaoPeriodo } from '../../core/models/timeframe.model';
+import { AuthService } from '../../core/services/auth';
 import { CotacaoService } from '../../core/services/cotacao';
 import { FavoritasService } from '../../core/services/favoritas';
 import { CurrencyCard } from '../../shared/components/currency-card/currency-card';
@@ -29,6 +31,7 @@ interface Resultado {
 export class CotacoesDashboard {
   private readonly cotacaoService = inject(CotacaoService);
   private readonly favoritasService = inject(FavoritasService);
+  protected readonly authService = inject(AuthService);
 
   protected readonly selecaoPeriodo = signal<SelecaoPeriodo>({ timeframe: '24h' });
   protected readonly favoritas = signal<Set<string>>(new Set());
@@ -55,10 +58,23 @@ export class CotacoesDashboard {
   );
 
   constructor() {
-    this.favoritasService.listar().subscribe((codigos) => {
-      const favoritas = new Set(codigos);
-      this.favoritas.set(favoritas);
-    });
+    toObservable(this.authService.usuarioLogado)
+      .pipe(
+        switchMap((usuario) =>
+          usuario
+            ? this.favoritasService.listar().pipe(
+                catchError((erro: HttpErrorResponse) => {
+                  if (erro.status === 401) {
+                    this.authService.logout();
+                  }
+                  return of([]);
+                }),
+              )
+            : of([]),
+        ),
+        takeUntilDestroyed(),
+      )
+      .subscribe((codigos) => this.favoritas.set(new Set(codigos)));
 
     const selecaoPeriodo$ = toObservable(this.selecaoPeriodo);
 
@@ -93,8 +109,32 @@ export class CotacoesDashboard {
   }
 
   protected alternarFavorita(codigoMoeda: string): void {
-    this.favoritasService
-      .alternar(codigoMoeda)
-      .subscribe((codigos) => this.favoritas.set(new Set(codigos)));
+    if (!this.authService.usuarioLogado()) {
+      this.authService.solicitarAutenticacao();
+      return;
+    }
+
+    const jaFavorita = this.favoritas().has(codigoMoeda);
+    const acao = jaFavorita
+      ? this.favoritasService.remover(codigoMoeda)
+      : this.favoritasService.adicionar(codigoMoeda);
+
+    acao.subscribe({
+      next: () => {
+        const atualizadas = new Set(this.favoritas());
+        if (jaFavorita) {
+          atualizadas.delete(codigoMoeda);
+        } else {
+          atualizadas.add(codigoMoeda);
+        }
+        this.favoritas.set(atualizadas);
+      },
+      error: (erro: HttpErrorResponse) => {
+        if (erro.status === 401) {
+          this.authService.logout();
+          this.authService.solicitarAutenticacao();
+        }
+      },
+    });
   }
 }

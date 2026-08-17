@@ -1,26 +1,26 @@
-import { Service } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Service, inject } from '@angular/core';
+import { Observable, map } from 'rxjs';
 
-import { carregarFavoritas, salvarFavoritas } from '../../shared/utils/favoritas-storage.util';
+import { environment } from '../../../environments/environment';
+import { FavoritoResponse } from '../models/favorito.model';
 
 @Service()
 export class FavoritasService {
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = `${environment.apiUrl}/favoritos`;
+
   listar(): Observable<string[]> {
-    return of(carregarFavoritas());
+    return this.http
+      .get<FavoritoResponse[]>(this.baseUrl)
+      .pipe(map((favoritos) => favoritos.map((favorito) => favorito.codigoMoeda)));
   }
 
-  salvar(codigosMoeda: string[]): Observable<void> {
-    salvarFavoritas(codigosMoeda);
-    return of(undefined);
+  adicionar(codigoMoeda: string): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/${codigoMoeda}`, null);
   }
 
-  alternar(codigoMoeda: string): Observable<string[]> {
-    const atuais = carregarFavoritas();
-    const novos = atuais.includes(codigoMoeda)
-      ? atuais.filter((codigo) => codigo !== codigoMoeda)
-      : [...atuais, codigoMoeda];
-
-    salvarFavoritas(novos);
-    return of(novos);
+  remover(codigoMoeda: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${codigoMoeda}`);
   }
 }
