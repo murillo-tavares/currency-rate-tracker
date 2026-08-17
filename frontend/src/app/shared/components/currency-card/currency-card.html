@@ -1,0 +1,43 @@
+<div class="card" [appFlash]="cotacao().valor">
+  <div class="cabecalho">
+    <div class="identidade">
+      <div class="codigo-badge">{{ cotacao().codigoMoeda }}</div>
+      <div class="nomes">
+        <span class="codigo">{{ cotacao().codigoMoeda }}</span>
+        <span class="nome">{{ cotacao().nome }}</span>
+      </div>
+    </div>
+    <button
+      type="button"
+      class="favorito"
+      [class.favorito-ativo]="favorita()"
+      (click)="onToggleFavorita()"
+      [attr.aria-label]="
+        favorita()
+          ? 'Remover ' + cotacao().nome + ' dos favoritos'
+          : 'Adicionar ' + cotacao().nome + ' aos favoritos'
+      "
+      [attr.aria-pressed]="favorita()"
+    >
+      {{ favorita() ? '★' : '☆' }}
+    </button>
+  </div>
+
+  <div class="valores">
+    <span class="valor">{{ cotacao().valor | moedaBrl: cotacao().codigoMoeda }}</span>
+    <span class="badge-variacao" [class.positiva]="emAlta()" [class.negativa]="!emAlta()">
+      {{ emAlta() ? '▲ +' : '▼ ' }}{{ variacaoFormatada() }}%
+    </span>
+  </div>
+
+  <app-sparkline [valores]="valores()" [cor]="corTendencia()" />
+
+  <div class="faixa">
+    <span
+      >Máx <strong>{{ maximo() | moedaBrl: cotacao().codigoMoeda }}</strong></span
+    >
+    <span
+      >Mín <strong>{{ minimo() | moedaBrl: cotacao().codigoMoeda }}</strong></span
+    >
+  </div>
+</div>

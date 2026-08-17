@@ -1,0 +1,23 @@
+.cabecalho {
+  display: flex;
+  align-items: center;
+  padding: 16px 32px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.marca {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.logo {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.tagline {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}

@@ -1,0 +1,57 @@
+<main class="painel">
+  <div class="status">
+    <div class="badge-ao-vivo">
+      <span class="ponto-pulsante"></span>
+      <span class="texto-ao-vivo">AO VIVO</span>
+    </div>
+    <span class="atualizado">atualizado {{ horaAtualizacao() }}</span>
+  </div>
+
+  <app-period-selector
+    [timeframe]="selecaoPeriodo().timeframe"
+    [inicioPersonalizado]="selecaoPeriodo().inicio ?? ''"
+    [fimPersonalizado]="selecaoPeriodo().fim ?? ''"
+    (selecaoAlterada)="onSelecaoPeriodoAlterada($event)"
+  />
+
+  @if (erro()) {
+    <p class="mensagem-erro">{{ erro() }}</p>
+  }
+
+  @if (carregando()) {
+    <p class="mensagem-carregando">Carregando cotações...</p>
+  } @else {
+    @if (cardsFavoritos().length > 0) {
+      <section class="secao">
+        <h2 class="titulo-secao">Favoritas</h2>
+        <div class="grade">
+          @for (card of cardsFavoritos(); track card.cotacao.codigoMoeda) {
+            <app-currency-card
+              [cotacao]="card.cotacao"
+              [pontos]="card.pontos"
+              [favorita]="card.favorita"
+              (favoritaAlternada)="alternarFavorita($event)"
+            />
+          }
+        </div>
+      </section>
+    }
+
+    <section class="secao">
+      <div class="cabecalho-secao">
+        <h1 class="titulo-principal">Cotações em BRL</h1>
+        <span class="contador">{{ cards().length }} moedas monitoradas</span>
+      </div>
+      <div class="grade">
+        @for (card of cards(); track card.cotacao.codigoMoeda) {
+          <app-currency-card
+            [cotacao]="card.cotacao"
+            [pontos]="card.pontos"
+            [favorita]="card.favorita"
+            (favoritaAlternada)="alternarFavorita($event)"
+          />
+        }
+      </div>
+    </section>
+  }
+</main>

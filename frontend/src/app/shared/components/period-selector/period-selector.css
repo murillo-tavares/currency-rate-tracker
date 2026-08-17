@@ -1,0 +1,44 @@
+.seletor {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.rotulo {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-right: 4px;
+}
+
+.botao {
+  padding: 6px 14px;
+  border-radius: 7px;
+  border: 1px solid var(--color-border-strong);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  background: transparent;
+  color: var(--color-text-secondary);
+}
+
+.botao.ativo {
+  background: var(--color-accent);
+  color: var(--color-bg);
+}
+
+.campo-data {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 7px;
+  padding: 6px 8px;
+  color: var(--color-text);
+  font-size: 12px;
+  font-family: inherit;
+}
+
+.ate {
+  color: var(--color-text-tertiary);
+  font-size: 12px;
+}

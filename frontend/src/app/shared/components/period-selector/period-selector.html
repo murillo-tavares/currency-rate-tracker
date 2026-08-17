@@ -1,0 +1,51 @@
+<div class="seletor">
+  <span class="rotulo">Período:</span>
+  <button
+    type="button"
+    class="botao"
+    [class.ativo]="timeframe() === '24h'"
+    (click)="selecionar('24h')"
+  >
+    24h
+  </button>
+  <button
+    type="button"
+    class="botao"
+    [class.ativo]="timeframe() === '7d'"
+    (click)="selecionar('7d')"
+  >
+    7d
+  </button>
+  <button
+    type="button"
+    class="botao"
+    [class.ativo]="timeframe() === '30d'"
+    (click)="selecionar('30d')"
+  >
+    30d
+  </button>
+  <button
+    type="button"
+    class="botao"
+    [class.ativo]="timeframe() === 'custom'"
+    (click)="selecionar('custom')"
+  >
+    Personalizado
+  </button>
+
+  @if (timeframe() === 'custom') {
+    <input
+      type="date"
+      class="campo-data"
+      [value]="inicioPersonalizado()"
+      (change)="onInicioAlterado($any($event.target).value)"
+    />
+    <span class="ate">até</span>
+    <input
+      type="date"
+      class="campo-data"
+      [value]="fimPersonalizado()"
+      (change)="onFimAlterado($any($event.target).value)"
+    />
+  }
+</div>
