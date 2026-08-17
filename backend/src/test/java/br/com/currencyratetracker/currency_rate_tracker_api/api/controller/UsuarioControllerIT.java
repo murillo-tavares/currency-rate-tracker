@@ -50,4 +50,16 @@ class UsuarioControllerIT extends IntegrationTest {
                                 """))
                 .andExpect(status().isBadRequest());
     }
+
+    /** Confirma a mensagem customizada — sem isso, o padrão do Bean Validation soa "entre 6 e 2147483647". */
+    @Test
+    void deveRejeitarSenhaMenorQueOMinimoComMensagemClara() throws Exception {
+        mockMvc.perform(post("/usuarios")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"email": "senhacurta@exemplo.com", "nome": "Teste", "senha": "123"}
+                                """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors[0].message").value("senha deve ter entre 6 e 72 caracteres"));
+    }
 }

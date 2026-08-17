@@ -312,14 +312,17 @@ components:
         email:
           type: string
           format: email
+          maxLength: 150
           example: usuario@exemplo.com
         nome:
           type: string
+          maxLength: 100
           example: Maria Silva
         senha:
           type: string
           format: password
           minLength: 6
+          maxLength: 72
           example: senha123
 
     UsuarioResponse:
@@ -340,10 +343,12 @@ components:
         email:
           type: string
           format: email
+          maxLength: 150
           example: usuario@exemplo.com
         senha:
           type: string
           format: password
+          maxLength: 72
           example: senha123
 
     LoginResponse:
