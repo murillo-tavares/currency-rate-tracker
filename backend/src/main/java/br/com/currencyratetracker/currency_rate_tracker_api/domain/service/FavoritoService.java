@@ -2,6 +2,7 @@ package br.com.currencyratetracker.currency_rate_tracker_api.domain.service;
 
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.favorito.Favorito;
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.repository.FavoritoRepository;
+import br.com.currencyratetracker.currency_rate_tracker_api.domain.specification.FavoritoSpecifications;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +24,7 @@ public class FavoritoService {
     public void adicionar(UUID usuarioId, String codigoMoeda) {
         moedaService.buscarPorCodigo(codigoMoeda);
 
-        boolean jaFavoritada = favoritoRepository.existsByUsuarioIdAndCodigoMoeda(usuarioId, codigoMoeda);
+        boolean jaFavoritada = favoritoRepository.exists(FavoritoSpecifications.comUsuarioIdECodigoMoeda(usuarioId, codigoMoeda));
         if (jaFavoritada) {
             return;
         }
@@ -37,11 +38,12 @@ public class FavoritoService {
     /** Remove a moeda dos favoritos do usuário; idempotente se não for favorita. */
     @Transactional
     public void remover(UUID usuarioId, String codigoMoeda) {
-        favoritoRepository.deleteByUsuarioIdAndCodigoMoeda(usuarioId, codigoMoeda);
+        List<Favorito> favoritos = favoritoRepository.findAll(FavoritoSpecifications.comUsuarioIdECodigoMoeda(usuarioId, codigoMoeda));
+        favoritoRepository.deleteAll(favoritos);
     }
 
     /** Lista os favoritos do usuário. */
     public List<Favorito> listar(UUID usuarioId) {
-        return favoritoRepository.findByUsuarioId(usuarioId);
+        return favoritoRepository.findAll(FavoritoSpecifications.comUsuarioId(usuarioId));
     }
 }

@@ -4,6 +4,7 @@ import br.com.currencyratetracker.currency_rate_tracker_api.domain.exception.aut
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.exception.usuario.EmailJaCadastradoException;
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.usuario.Usuario;
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.repository.UsuarioRepository;
+import br.com.currencyratetracker.currency_rate_tracker_api.domain.specification.UsuarioSpecifications;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ public class UsuarioService {
 
     /** Cadastra um novo usuário, com a senha já hasheada. Rejeita email já cadastrado. */
     public Usuario cadastrar(String email, String nome, String senha) {
-        if (usuarioRepository.existsByEmail(email)) {
+        if (usuarioRepository.exists(UsuarioSpecifications.comEmail(email))) {
             throw EmailJaCadastradoException.paraEmail(email);
         }
         Usuario usuario = Usuario.builder()
@@ -33,7 +34,7 @@ public class UsuarioService {
 
     /** Autentica por email/senha; lança se as credenciais não conferirem. */
     public Usuario autenticar(String email, String senha) {
-        Usuario usuario = usuarioRepository.findByEmail(email)
+        Usuario usuario = usuarioRepository.findOne(UsuarioSpecifications.comEmail(email))
                 .orElseThrow(CredenciaisInvalidasException::new);
         if (!passwordEncoder.matches(senha, usuario.getSenha())) {
             throw new CredenciaisInvalidasException();
