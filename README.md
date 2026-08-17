@@ -12,6 +12,14 @@ cadastro de usuário, login e favoritos. Backend (Spring Boot) e frontend (Angul
   <img src="https://img.shields.io/badge/Testcontainers-2496ed?logo=docker&logoColor=white" alt="Testcontainers">
 </p>
 
+## 🌐 Aplicação hospedada
+
+- Frontend: https://currency-rate-tracker-beta.vercel.app/
+- Backend (documentação da API): https://currency-rate-tracker-api.onrender.com/api/v1/scalar.html
+
+> ⚠️ Backend hospedado no plano free do Render: a instância dorme por inatividade, então o primeiro acesso (seja
+> no frontend ou na documentação) pode demorar cerca de 1 minuto pra responder.
+
 ## 🚀 Como executar
 
 Sobe Postgres + Redis + API + frontend:
@@ -37,16 +45,26 @@ A spec fica em [openapi.yaml](backend/src/main/resources/static/openapi.yaml), u
 gerada por anotação no controller. **Decisão:** controller fica limpo, e a doc é livre pra customizar sem mexer
 em Java.
 
+- 🌀 Scalar: https://currency-rate-tracker-api.onrender.com/api/v1/scalar.html
+- 🧭 Swagger UI (alternativa): https://currency-rate-tracker-api.onrender.com/api/v1/swagger-ui/index.html
+- 📄 Spec: https://currency-rate-tracker-api.onrender.com/api/v1/openapi.yaml
+
+<details>
+<summary>Local (localhost:8080)</summary>
+
 - 🌀 Scalar: http://localhost:8080/api/v1/scalar.html
 - 🧭 Swagger UI (alternativa): http://localhost:8080/api/v1/swagger-ui/index.html
 - 📄 Spec: http://localhost:8080/api/v1/openapi.yaml
+
+</details>
 
 ### 📮 Postman
 
 - [currency-rate-tracker-api.postman_collection.json](docs/postman/currency-rate-tracker-api.postman_collection.json)
 - [currency-rate-tracker-api.local.postman_environment.json](docs/postman/currency-rate-tracker-api.local.postman_environment.json)
+- [currency-rate-tracker-api.render.postman_environment.json](docs/postman/currency-rate-tracker-api.render.postman_environment.json)
 
-Mais detalhes (import, fluxo de login) em [docs/postman/README.md](docs/postman/README.md).
+Mais detalhes (import, troca de ambiente, fluxo de login) em [docs/postman/README.md](docs/postman/README.md).
 
 ## 🧪 Testes
 
