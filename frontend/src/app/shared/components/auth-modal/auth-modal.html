@@ -1,0 +1,76 @@
+@if (aberto()) {
+  <div class="fundo" (click)="fechar()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="abas">
+        <button
+          type="button"
+          class="aba"
+          [class.aba-ativa]="!modoCadastro()"
+          (click)="selecionarModo('login')"
+        >
+          Entrar
+        </button>
+        <button
+          type="button"
+          class="aba"
+          [class.aba-ativa]="modoCadastro()"
+          (click)="selecionarModo('cadastro')"
+        >
+          Criar conta
+        </button>
+      </div>
+
+      <form ngNativeValidate (ngSubmit)="enviar()">
+        @if (modoCadastro()) {
+          <label class="campo">
+            Nome
+            <input
+              type="text"
+              placeholder="Seu nome"
+              autocomplete="name"
+              required
+              maxlength="100"
+              [value]="nome()"
+              (input)="nome.set($any($event.target).value)"
+            />
+          </label>
+        }
+
+        <label class="campo">
+          E-mail
+          <input
+            type="email"
+            placeholder="voce@email.com"
+            autocomplete="email"
+            required
+            maxlength="150"
+            [value]="email()"
+            (input)="email.set($any($event.target).value)"
+          />
+        </label>
+
+        <label class="campo">
+          Senha
+          <input
+            type="password"
+            placeholder="••••••••"
+            autocomplete="current-password"
+            required
+            minlength="6"
+            maxlength="72"
+            [value]="senha()"
+            (input)="senha.set($any($event.target).value)"
+          />
+        </label>
+
+        @if (erro()) {
+          <p class="erro">{{ erro() }}</p>
+        }
+
+        <button type="submit" class="botao-enviar" [disabled]="carregando()">
+          {{ carregando() ? 'Aguarde…' : rotuloBotao() }}
+        </button>
+      </form>
+    </div>
+  </div>
+}

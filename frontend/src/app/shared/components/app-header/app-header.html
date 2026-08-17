@@ -3,4 +3,16 @@
     <span class="logo">CotaçãoBR</span>
     <span class="tagline">câmbio em tempo real</span>
   </div>
+
+  @if (auth.usuarioLogado(); as usuario) {
+    <div class="sessao">
+      <div class="identidade">
+        <span class="nome">{{ usuario.nome ?? usuario.email }}</span>
+        <button type="button" class="sair" (click)="auth.logout()">Sair</button>
+      </div>
+      <div class="avatar">{{ inicial() }}</div>
+    </div>
+  } @else {
+    <button type="button" class="entrar" (click)="auth.solicitarAutenticacao()">Entrar</button>
+  }
 </header>
