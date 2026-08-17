@@ -1,0 +1,205 @@
+{
+  "info": {
+    "_postman_id": "f3b1a2d4-9e6c-4b7a-8f21-6a1d4c9b2e70",
+    "name": "Currency Rate Tracker API",
+    "description": "API de cotação de moedas — catálogo de moedas, cotações atuais/históricas, cadastro de usuário, login e favoritos.\n\nGerado a partir de `backend/src/main/resources/static/openapi.yaml`.\n\nUse o environment \"Currency Rate Tracker API - Local\" junto com esta collection: a requisição \"Login\" tem um script de teste que salva o token retornado na variável de environment `token`, então as requisições de \"Favorito\" já usam `Authorization: Bearer {{token}}` sem precisar copiar e colar nada.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Moeda",
+      "item": [
+        {
+          "name": "Listar moedas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/moedas",
+              "host": ["{{baseUrl}}"],
+              "path": ["moedas"]
+            },
+            "description": "Lista todas as moedas disponíveis para cotação."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Cotação",
+      "item": [
+        {
+          "name": "Listar cotações atuais",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/cotacoes?codigosMoeda=USD&codigosMoeda=EUR",
+              "host": ["{{baseUrl}}"],
+              "path": ["cotacoes"],
+              "query": [
+                { "key": "codigosMoeda", "value": "USD", "disabled": true },
+                { "key": "codigosMoeda", "value": "EUR", "disabled": true }
+              ]
+            },
+            "description": "Cotação atual das moedas do catálogo (ou só as informadas em `codigosMoeda`), servida a partir do banco/cache."
+          },
+          "response": []
+        },
+        {
+          "name": "Dashboard de cotações",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/cotacoes/dashboard?codigosMoeda=USD&codigosMoeda=EUR&inicio=&fim=",
+              "host": ["{{baseUrl}}"],
+              "path": ["cotacoes", "dashboard"],
+              "query": [
+                { "key": "codigosMoeda", "value": "USD", "disabled": true },
+                { "key": "codigosMoeda", "value": "EUR", "disabled": true },
+                { "key": "inicio", "value": "", "disabled": true },
+                { "key": "fim", "value": "", "disabled": true }
+              ]
+            },
+            "description": "Histórico de cotações agrupado em gráfico por moeda. Sem `codigosMoeda`, considera todas as moedas do catálogo; sem `inicio`, considera as últimas 24 horas."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Usuário",
+      "item": [
+        {
+          "name": "Cadastrar usuário",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"usuario@exemplo.com\",\n  \"nome\": \"Usuário Teste\",\n  \"senha\": \"senha123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/usuarios",
+              "host": ["{{baseUrl}}"],
+              "path": ["usuarios"]
+            },
+            "description": "Cadastra um novo usuário."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Autenticação",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const jsonData = pm.response.json();",
+                  "    if (jsonData.token) {",
+                  "        pm.environment.set(\"token\", jsonData.token);",
+                  "        console.log(\"token salvo no environment\");",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"usuario@exemplo.com\",\n  \"senha\": \"senha123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Autentica por email/senha. Ao receber 200, salva o `token` retornado na variável de environment `token`, usada pelas requisições de \"Favorito\"."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Favorito",
+      "item": [
+        {
+          "name": "Listar favoritos",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/favoritos",
+              "host": ["{{baseUrl}}"],
+              "path": ["favoritos"]
+            },
+            "description": "Lista os favoritos do usuário autenticado (token salvo em `token` pela requisição \"Login\")."
+          },
+          "response": []
+        },
+        {
+          "name": "Adicionar favorito",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/favoritos/:codigoMoeda",
+              "host": ["{{baseUrl}}"],
+              "path": ["favoritos", ":codigoMoeda"],
+              "variable": [
+                { "key": "codigoMoeda", "value": "USD" }
+              ]
+            },
+            "description": "Adiciona a moeda `codigoMoeda` aos favoritos do usuário autenticado. Idempotente."
+          },
+          "response": []
+        },
+        {
+          "name": "Remover favorito",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/favoritos/:codigoMoeda",
+              "host": ["{{baseUrl}}"],
+              "path": ["favoritos", ":codigoMoeda"],
+              "variable": [
+                { "key": "codigoMoeda", "value": "USD" }
+              ]
+            },
+            "description": "Remove a moeda `codigoMoeda` dos favoritos do usuário autenticado. Idempotente."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api/v1",
+      "type": "string"
+    }
+  ]
+}
