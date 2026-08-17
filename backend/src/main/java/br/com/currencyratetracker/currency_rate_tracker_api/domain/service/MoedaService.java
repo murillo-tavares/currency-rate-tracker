@@ -1,5 +1,6 @@
 package br.com.currencyratetracker.currency_rate_tracker_api.domain.service;
 
+import br.com.currencyratetracker.currency_rate_tracker_api.domain.exception.moeda.MoedaNaoEncontradaException;
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.model.moeda.Moeda;
 import br.com.currencyratetracker.currency_rate_tracker_api.domain.repository.MoedaRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,5 +21,11 @@ public class MoedaService {
     /** Lista todas as moedas disponíveis no catálogo. */
     public List<Moeda> listar() {
         return moedaRepository.findAll();
+    }
+
+    /** Busca uma moeda pelo código; lança se não existir no catálogo. */
+    public Moeda buscarPorCodigo(String codigo) {
+        return moedaRepository.findByCodigo(codigo)
+                .orElseThrow(() -> MoedaNaoEncontradaException.paraCodigo(codigo));
     }
 }

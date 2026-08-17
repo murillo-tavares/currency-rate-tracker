@@ -16,6 +16,8 @@ tags:
     description: Cadastro de usuário
   - name: Autenticação
     description: Login e emissão de token JWT
+  - name: Favorito
+    description: Moedas favoritas do usuário autenticado
 
 paths:
   /moedas:
@@ -157,7 +159,90 @@ paths:
               schema:
                 $ref: "#/components/schemas/Erro"
 
+  /favoritos:
+    get:
+      tags: [Favorito]
+      summary: Lista os favoritos do usuário autenticado
+      operationId: listarFavoritos
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Favoritos do usuário
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FavoritoResponse"
+        "401":
+          description: Autenticação necessária
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+
+  /favoritos/{codigoMoeda}:
+    post:
+      tags: [Favorito]
+      summary: Adiciona uma moeda aos favoritos do usuário autenticado
+      description: Idempotente. Favoritar uma moeda já favoritada não tem efeito.
+      operationId: adicionarFavorito
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/CodigoMoeda"
+      responses:
+        "204":
+          description: Moeda favoritada
+        "401":
+          description: Autenticação necessária
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+        "404":
+          description: Moeda não encontrada no catálogo
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+    delete:
+      tags: [Favorito]
+      summary: Remove uma moeda dos favoritos do usuário autenticado
+      description: Idempotente. Remover uma moeda que não é favorita não tem efeito.
+      operationId: removerFavorito
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/CodigoMoeda"
+      responses:
+        "204":
+          description: Moeda removida dos favoritos
+        "401":
+          description: Autenticação necessária
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    CodigoMoeda:
+      name: codigoMoeda
+      in: path
+      required: true
+      description: Código da moeda, ex. USD
+      schema:
+        type: string
+      example: USD
+
   schemas:
     MoedaResponse:
       type: object
@@ -267,6 +352,13 @@ components:
         token:
           type: string
           description: Token JWT, usado como `Authorization Bearer <token>` nos endpoints protegidos.
+
+    FavoritoResponse:
+      type: object
+      properties:
+        codigoMoeda:
+          type: string
+          example: USD
 
     Erro:
       type: object
