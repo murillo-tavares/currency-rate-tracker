@@ -12,6 +12,10 @@ tags:
     description: Catálogo de moedas suportadas para cotação
   - name: Cotação
     description: Cotação atual e histórico de cotações das moedas
+  - name: Usuário
+    description: Cadastro de usuário
+  - name: Autenticação
+    description: Login e emissão de token JWT
 
 paths:
   /moedas:
@@ -97,6 +101,62 @@ paths:
               schema:
                 $ref: "#/components/schemas/DashboardResponse"
 
+  /usuarios:
+    post:
+      tags: [Usuário]
+      summary: Cadastra um novo usuário
+      operationId: cadastrarUsuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CadastroRequest"
+      responses:
+        "201":
+          description: Usuário cadastrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsuarioResponse"
+        "400":
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+        "409":
+          description: Já existe um usuário cadastrado com esse email
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+
+  /auth/login:
+    post:
+      tags: [Autenticação]
+      summary: Autentica por email/senha e devolve um token JWT
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "401":
+          description: Email ou senha inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+
 components:
   schemas:
     MoedaResponse:
@@ -159,3 +219,68 @@ components:
         dataCotacao:
           type: string
           format: date-time
+
+    CadastroRequest:
+      type: object
+      required: [email, nome, senha]
+      properties:
+        email:
+          type: string
+          format: email
+          example: usuario@exemplo.com
+        nome:
+          type: string
+          example: Maria Silva
+        senha:
+          type: string
+          format: password
+          minLength: 6
+          example: senha123
+
+    UsuarioResponse:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: usuario@exemplo.com
+        nome:
+          type: string
+          example: Maria Silva
+
+    LoginRequest:
+      type: object
+      required: [email, senha]
+      properties:
+        email:
+          type: string
+          format: email
+          example: usuario@exemplo.com
+        senha:
+          type: string
+          format: password
+          example: senha123
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Token JWT, usado como `Authorization Bearer <token>` nos endpoints protegidos.
+
+    Erro:
+      type: object
+      properties:
+        status:
+          type: integer
+        error:
+          type: string
+        codigo:
+          type: string
+          description: Código do erro de negócio (catálogo interno). Ausente em erros de framework/validação.
+          nullable: true
+          example: EMAIL_JA_CADASTRADO
+        message:
+          type: string
+        path:
+          type: string

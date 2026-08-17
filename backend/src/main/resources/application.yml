@@ -28,6 +28,11 @@ cotacao:
   atualizacao:
     intervalo-millis: ${COTACAO_ATUALIZACAO_INTERVALO_MILLIS:60000}
 
+seguranca:
+  jwt:
+    secret: ${JWT_SECRET:chave-secreta-apenas-para-desenvolvimento-trocar-em-producao-000000}
+    expiracao-millis: ${JWT_EXPIRACAO_MILLIS:3600000}
+
 springdoc:
   swagger-ui:
     url: /openapi.yaml
