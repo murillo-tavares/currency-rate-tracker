@@ -54,17 +54,29 @@ describe('CurrencyCard', () => {
     expect(texto).toContain('▼ -0.38%');
   });
 
-  it('calcula máximo e mínimo a partir do histórico e do valor atual', () => {
-    fixture.componentRef.setInput('cotacao', criarCotacao({ valor: 10 }));
+  it('calcula máximo e mínimo a partir só do histórico do período, sem misturar o valor atual', () => {
+    fixture.componentRef.setInput('cotacao', criarCotacao({ valor: 100 }));
     fixture.componentRef.setInput('pontos', [
       { valor: 8, variacaoPercentual: 0, dataCotacao: '2026-08-15T10:00:00' },
       { valor: 12, variacaoPercentual: 0, dataCotacao: '2026-08-15T11:00:00' },
     ]);
     fixture.detectChanges();
 
+    const faixa = (fixture.nativeElement as HTMLElement).querySelector('.faixa')?.textContent ?? '';
+    expect(faixa).toContain('R$ 12,00');
+    expect(faixa).toContain('R$ 8,00');
+    expect(faixa).not.toContain('R$ 100,00');
+  });
+
+  it('sem nenhum ponto no período, usa o valor atual como máximo e mínimo', () => {
+    fixture.componentRef.setInput('cotacao', criarCotacao({ valor: 7.5 }));
+    fixture.componentRef.setInput('pontos', []);
+    fixture.detectChanges();
+
     const texto = (fixture.nativeElement as HTMLElement).textContent ?? '';
-    expect(texto).toContain('R$ 12,00');
-    expect(texto).toContain('R$ 8,00');
+    expect(texto).toContain('Máx');
+    expect(texto).toContain('Mín');
+    expect(texto).toContain('R$ 7,50');
   });
 
   it('emite o código da moeda ao clicar no botão de favorito', () => {

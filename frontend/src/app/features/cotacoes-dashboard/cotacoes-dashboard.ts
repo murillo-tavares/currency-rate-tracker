@@ -10,6 +10,7 @@ import { FavoritasService } from '../../core/services/favoritas';
 import { CurrencyCard } from '../../shared/components/currency-card/currency-card';
 import { PeriodSelector } from '../../shared/components/period-selector/period-selector';
 import { CardVisivel, montarCards } from '../../shared/utils/card-visivel.util';
+import { formatarHora } from '../../shared/utils/data-hora.util';
 
 export const INTERVALO_ATUALIZACAO_MS = 20_000;
 
@@ -32,9 +33,10 @@ export class CotacoesDashboard {
   protected readonly selecaoPeriodo = signal<SelecaoPeriodo>({ timeframe: '24h' });
   protected readonly favoritas = signal<Set<string>>(new Set());
   protected readonly ultimaAtualizacao = signal<Date | null>(null);
-  protected readonly horaAtualizacao = computed(
-    () => this.ultimaAtualizacao()?.toLocaleTimeString('pt-BR') ?? '--:--:--',
-  );
+  protected readonly horaAtualizacao = computed(() => {
+    const data = this.ultimaAtualizacao();
+    return data ? formatarHora(data) : '--:--:--';
+  });
 
   protected readonly carregando = signal(true);
   protected readonly erro = signal<string | null>(null);

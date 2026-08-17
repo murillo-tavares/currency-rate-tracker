@@ -21,12 +21,14 @@ export class CurrencyCard {
 
   readonly favoritaAlternada = output<string>();
 
-  protected readonly maximo = computed(() => Math.max(...this.valores()));
-  protected readonly minimo = computed(() => Math.min(...this.valores()));
-  protected readonly valores = computed(() => [
-    ...this.pontos().map((p) => p.valor),
-    this.cotacao().valor,
-  ]);
+  protected readonly valores = computed(() => this.pontos().map((p) => p.valor));
+
+  protected readonly maximo = computed(() =>
+    this.valores().length > 0 ? Math.max(...this.valores()) : this.cotacao().valor,
+  );
+  protected readonly minimo = computed(() =>
+    this.valores().length > 0 ? Math.min(...this.valores()) : this.cotacao().valor,
+  );
 
   protected readonly emAlta = computed(() => this.cotacao().variacaoPercentual >= 0);
   protected readonly corTendencia = computed(() =>
