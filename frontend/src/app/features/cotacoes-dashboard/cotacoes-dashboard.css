@@ -51,6 +51,19 @@
   color: var(--color-up);
 }
 
+.badge-iniciando {
+  background: var(--color-gold-bg);
+  border-color: var(--color-gold-border);
+}
+
+.badge-iniciando .ponto-pulsante {
+  background: var(--color-gold);
+}
+
+.badge-iniciando .texto-ao-vivo {
+  color: var(--color-gold);
+}
+
 .atualizado {
   font-family: var(--font-mono);
   font-size: 12px;
@@ -62,7 +75,8 @@
   color: var(--color-down);
 }
 
-.mensagem-carregando {
+.mensagem-carregando,
+.mensagem-iniciando {
   font-size: 13px;
   color: var(--color-text-secondary);
 }

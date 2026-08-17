@@ -90,7 +90,37 @@ describe('CotacoesDashboard', () => {
 
       expect(elemento().textContent).not.toContain('Carregando cotações');
       expect(elemento().querySelectorAll('app-currency-card').length).toBe(2);
+      expect(elemento().querySelector('.texto-ao-vivo')?.textContent).toBe('AO VIVO');
       httpMock.expectNone(baseUrlFavoritos);
+    });
+
+    it('antes de conseguir conectar pela primeira vez, mostra "iniciando" em vez de parecer erro', async () => {
+      // forkJoin cancela a outra request assim que uma das duas falha — só erra uma.
+      httpMock.expectOne((r) => r.url === baseUrl).error(new ProgressEvent('erro de rede'));
+      httpMock.expectOne((r) => r.url === `${baseUrl}/dashboard`);
+      await vi.advanceTimersByTimeAsync(0);
+      fixture.detectChanges();
+
+      expect(elemento().querySelector('.texto-ao-vivo')?.textContent).toBe('INICIANDO');
+      expect(elemento().querySelector('.badge-iniciando')).toBeTruthy();
+      expect(elemento().textContent).toContain('Conectando ao servidor');
+      expect(elemento().textContent).not.toContain('Não foi possível atualizar as cotações agora.');
+      expect(elemento().textContent).not.toContain('atualizado');
+      expect(elemento().querySelectorAll('app-currency-card').length).toBe(0);
+    });
+
+    it('assim que conecta pela primeira vez, mesmo após falhas anteriores, volta ao normal', async () => {
+      httpMock.expectOne((r) => r.url === baseUrl).error(new ProgressEvent('erro de rede'));
+      httpMock.expectOne((r) => r.url === `${baseUrl}/dashboard`);
+      await vi.advanceTimersByTimeAsync(0);
+      fixture.detectChanges();
+      expect(elemento().querySelector('.texto-ao-vivo')?.textContent).toBe('INICIANDO');
+
+      await vi.advanceTimersByTimeAsync(INTERVALO_ATUALIZACAO_MS);
+      await flushCotacoes();
+
+      expect(elemento().querySelector('.texto-ao-vivo')?.textContent).toBe('AO VIVO');
+      expect(elemento().querySelectorAll('app-currency-card').length).toBe(2);
     });
 
     it('junta o histórico do dashboard com a cotação certa por código', async () => {

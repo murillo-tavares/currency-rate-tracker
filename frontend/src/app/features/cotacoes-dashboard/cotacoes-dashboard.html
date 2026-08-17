@@ -1,10 +1,12 @@
 <main class="painel">
   <div class="status">
-    <div class="badge-ao-vivo">
+    <div class="badge-ao-vivo" [class.badge-iniciando]="!conectado()">
       <span class="ponto-pulsante"></span>
-      <span class="texto-ao-vivo">AO VIVO</span>
+      <span class="texto-ao-vivo">{{ conectado() ? 'AO VIVO' : 'INICIANDO' }}</span>
     </div>
-    <span class="atualizado">atualizado {{ horaAtualizacao() }}</span>
+    @if (conectado()) {
+      <span class="atualizado">atualizado {{ horaAtualizacao() }}</span>
+    }
   </div>
 
   <app-period-selector
@@ -14,12 +16,16 @@
     (selecaoAlterada)="onSelecaoPeriodoAlterada($event)"
   />
 
-  @if (erro()) {
+  @if (conectado() && erro()) {
     <p class="mensagem-erro">{{ erro() }}</p>
   }
 
   @if (carregando()) {
     <p class="mensagem-carregando">Carregando cotações...</p>
+  } @else if (!conectado()) {
+    <p class="mensagem-iniciando">
+      Conectando ao servidor... isso pode levar até um minuto na primeira vez.
+    </p>
   } @else {
     @if (cardsFavoritos().length > 0) {
       <section class="secao">

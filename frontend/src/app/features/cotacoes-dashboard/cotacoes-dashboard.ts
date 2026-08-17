@@ -42,6 +42,7 @@ export class CotacoesDashboard {
   });
 
   protected readonly carregando = signal(true);
+  protected readonly conectado = signal(false);
   protected readonly erro = signal<string | null>(null);
   protected readonly ultimoResultadoValido = signal<Resultado>({
     cotacoes: [],
@@ -87,6 +88,7 @@ export class CotacoesDashboard {
           }).pipe(
             tap((sucesso) => {
               this.ultimoResultadoValido.set(sucesso);
+              this.conectado.set(true);
               this.erro.set(null);
             }),
             catchError(() => {
