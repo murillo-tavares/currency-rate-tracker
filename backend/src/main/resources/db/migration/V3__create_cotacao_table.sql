@@ -8,5 +8,7 @@ CREATE TABLE cotacao (
     data_criacao TIMESTAMP NOT NULL DEFAULT now()
 );
 
--- Cobre o padrão de acesso mais provável: série de uma moeda num intervalo de datas.
-CREATE INDEX idx_cotacao_codigo_moeda_data ON cotacao (codigo_moeda, data_cotacao);
+-- Cobre a série de uma moeda num intervalo de datas, e casa com a ordenação usada por
+-- CotacaoRepository.buscarUltimaCotacao[PorMoeda] (DISTINCT ON codigo_moeda), evitando
+-- um sort extra pra resolver o desempate por data_criacao.
+CREATE INDEX idx_cotacao_codigo_moeda_data ON cotacao (codigo_moeda, data_cotacao DESC, data_criacao DESC);
